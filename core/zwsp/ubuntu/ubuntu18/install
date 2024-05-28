@@ -1,0 +1,4 @@
+sudo cp sources.list /etc/apt/
+cp .vimrc ~/
+cp .bashrc ~/
+cp .gitconfig ~/

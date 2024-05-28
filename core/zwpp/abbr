@@ -1,0 +1,41 @@
+# 术语
+OT           operation technology               操作系统
+IT           information technology             互联网技术、信息技术
+CT           communication technology           通信技术
+MCS          mixed criticality system           混合关键系统
+IPI          interprocessor interrupt           核间中断 (0 - 15) = SGI
+MSI          message signaled interrupt         消息传递中断
+SGI          software generated interrupt       软件触发中断
+SWI          software interrupt                 软中断
+PE           performace core                    性能核
+TEE                                             可信执行环境
+REE                                             不可信执行环境
+
+# 缓存、内存
+PTE          page table entry                   页表项
+PGD          page global directory              页面目录
+PUD          page upper directory               页上层目录
+PMD          page middle directory              页中层目录
+PT           page table                         页表
+TLB          translation lookaside buffer       页表缓冲
+EL           exception level                    异常等级
+
+# ARM
+SVC          supervisor call                    用户空间调用内核时，通过SVC进入到内核
+ATF          arm trusted firmware               arm可信固件
+
+# 军事
+IoT          internet of Things                 物联网
+MIoT         massive Iot                        大规模物联网
+IoMT                                            军事物联网
+IOBT         internet of battlefiled things     战场物联网
+
+RPM包制作
+
+# 新技术
+PSCI - aarch64电源管理方案, 支持
+
+
+# 有待学
+python
+cmd 命令 集成 find grep

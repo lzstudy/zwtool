@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwscp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwput
+LINK_FILE=$PATH_ZWTL_INST/pt
+
+# WORK文件
+HOST_FILE=$WORK_PATH/hosts
+source $HOST_FILE 2> /dev/null
+
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function print_usage()
+{
+    echo "cmd           [arg]            [val]     description"
+    echo "----------    -------------    ------    --------------"
+	echo "pt            -a/-s/-b/-t      file      put file to host"
+	echo "pt            -e                         edit host"
+}
+
+########################################################################################################
+# 获取文件
+########################################################################################################
+function put_file()
+{
+	SCP_DIR=
+	
+	case $1 in
+		-a)
+		SCP_DIR=$HOST_ZW
+		;;
+
+		-s)
+		SCP_DIR=$HOST_SERVER
+		;;
+
+		-b)
+		SCP_DIR=$HOST_BOARD
+		;;
+
+		-t)
+		SCP_DIR=$HOST_TMP
+		;;
+	esac
+
+	scp -r $2 $SCP_DIR
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwput_entry()
+{
+	# 如果没写参数, 或帮助命令, 则打印帮助信息
+	if [ $# = 0 ] || [ $1 = '-h' ] || [ $1 = '--help' ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+		-init)
+		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+		;;
+
+		-edit)
+		vi $THIS_FILE
+		;;
+
+		-e)
+		vi $HOST_FILE
+		;;
+
+		*)
+		put_file $@
+		;;
+	esac
+}
+zwput_entry $@
+

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+PATH_BASE=$(cd `dirname $0`; pwd)
+PATH_ROOT=${PATH_BASE}/root_zwstr
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function print_usage()
+{
+	echo "usage: zwput <-a/-s/-e/-t> <file>"
+	echo ""
+	echo "optioin list:"
+	echo "-rsf   replace sample file   str -rpf <xxx>"
+	echo "-rsd   replace sample dir    str -rpd <xxx>"
+}
+
+########################################################################################################
+# 替换文本
+########################################################################################################
+function replace_sample_file()
+{
+    local LOWER=$2
+    local UPPER=`echo $2 | tr a-z A-Z`
+
+    sed -i "s/$1/$2/g" $FILE
+}
+
+########################################################################################################
+# 替换文件夹
+########################################################################################################
+function replace_sample_dir()
+{
+    local FILE=$2
+    local LOWER=$3
+    local UPPER=`echo $3 | tr a-z A-Z`
+
+    sed -i "s/xxx/$LOWER/g" `grep xxx -rl $FILE` 2> /dev/null
+    sed -i "s/XXX/$UPPER/g" `grep XXX -rl $FILE` 2> /dev/null
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwstr_entry()
+{
+    case $1 in
+        -edit)
+        vi ${PATH_BASE}/zwstr
+        ;;
+
+        -rsf)
+        replace_sample_file $@
+        ;;
+
+        -rsd)
+        replace_sample_dir $@
+        ;;
+
+        *)
+        print_usage
+        ;;
+    esac
+}
+
+zwstr_entry $@

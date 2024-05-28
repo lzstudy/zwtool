@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwscp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwget
+LINK_FILE=$PATH_ZWTL_INST/gt
+
+# WORK文件
+HOST_FILE=$WORK_PATH/hosts
+source $HOST_FILE 2> /dev/null
+
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function print_usage()
+{
+    echo "cmd           [arg]            [val]     description"
+    echo "----------    -------------    ------    --------------"
+	echo "gt            -a/-s/-b/-t      file      gut file from host"
+	echo "gt            -e                         edit host"
+}
+
+########################################################################################################
+# 获取文件
+########################################################################################################
+function get_file()
+{
+	SCP_FILE=
+	
+	case $1 in
+		-a)
+		SCP_FILE=$HOST_ZW/$2
+		;;
+
+		-s)
+		SCP_FILE=$HOST_SERVER/$2
+		;;
+
+		-b)
+		SCP_FILE=$HOST_BOARD/$2
+		;;
+
+		-t)
+		SCP_FILE=$HOST_TMP/$2
+		;;
+	esac
+
+	scp -r $SCP_FILE .
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwget_entry()
+{
+	# 如果没写参数, 或帮助命令, 则打印帮助信息
+	if [ $# = 0 ] || [ $1 = '-h' ] || [ $1 = '--help' ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+		-init)
+		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+		;;
+
+		-edit)
+		vi $THIS_FILE
+		;;
+
+		-e)
+		vi $HOST_FILE
+		;;
+
+		*)
+		get_file $@
+		;;
+	esac
+}
+zwget_entry $@
+

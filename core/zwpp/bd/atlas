@@ -1,0 +1,9 @@
+#################### {base} 基础资料
+https://support.huawei.com/enterprise/zh/doc/EDOC1100244199/5fb4631d       -       文档网站
+ 
+#################### {src} 源码相关                                       
+${sdk}/dtb/dts/hi1910b/hi1910BL/hi1910B-asic-M150-B51.dts                  -       设备树
+
+#################### {env} 环境搭建
+dd if=Image of=/dev/mmcblk1 count=61440 seek=32768 bs=512                  -       更新内核
+dd if=dt.img of=/dev/mmcblk1 count=4096 seek=114688 bs=512                 -       更新设备树

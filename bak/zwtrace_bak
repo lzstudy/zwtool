@@ -1,0 +1,218 @@
+#!/bin/sh
+########################################################################################################
+# sample to use ftrace
+########################################################################################################
+
+TRACE_ROOT=/sys/kernel/tracing
+KP_EVENT=$TRACE_ROOT/kprobe_events
+KP_ENABLE=$TRACE_ROOT/events/kprobes/enable
+
+########################################################################################################
+# usage help
+########################################################################################################
+function print_usage()
+{
+    echo ""
+	echo "usage : zt <option> <param>"
+	echo ""
+    echo "optioin list:"
+	echo "-h     zt -h            print usage"
+    echo "-path  source zt -path  enter ftrace root"
+	echo "-init  zt -init         should use this cmd first"
+    echo "-f     zt -f [func]     clean func tracer or set func tracer, use to back trace"
+    echo "-g     zt -g [func]     clean graph tracer or set graph tracer, use to show call seqence"
+    echo "-p     zt -p [pid]      clean pid or set trace pid, use to trace thread"
+    echo "-s     zt -s [file]     show trace or save trace"
+    echo "-c     zt -c [all]      clean trace or clean all"
+    echo "-l     zt -l            show all trace set"
+    echo "-gd    zt -gd [depth]   show graph tracer depth or set depth"
+}
+
+########################################################################################################
+# zwtrace init
+########################################################################################################
+function zt_init()
+{
+    # mount tracefs
+    mount -t tracefs tracefs $TRACE_ROOT 2>/dev/null
+
+    # set default graph depth
+    echo 5 > $TRACE_ROOT/max_graph_depth
+}
+
+########################################################################################################
+# set graph trace func
+########################################################################################################
+function zt_set_graph_func()
+{
+	if [ $# = 1 ];then
+    	echo > $TRACE_ROOT/set_graph_function
+    else
+        echo function_graph > $TRACE_ROOT/current_tracer
+        echo $2 > $TRACE_ROOT/set_graph_function
+	fi
+}
+
+########################################################################################################
+# set trace pid
+########################################################################################################
+function zt_set_pid()
+{
+	if [ $# = 1 ];then
+    	echo $2 > $TRACE_ROOT/set_ftrace_pid
+    else
+        echo function_graph > $TRACE_ROOT/current_tracer
+        echo $2 > $TRACE_ROOT/set_ftrace_pid
+	fi
+}
+
+########################################################################################################
+# set sfunc tracer, can check bt
+########################################################################################################
+function zt_set_func()
+{
+	if [ $# = 1 ];then
+    	echo >  $TRACE_ROOT/set_ftrace_filter
+    else
+        echo function > $TRACE_ROOT/current_tracer
+        echo 1 > $TRACE_ROOT/options/func_stack_trace
+        echo $2 > $TRACE_ROOT/set_ftrace_filter
+	fi
+}
+
+########################################################################################################
+# set trace pid
+########################################################################################################
+function zt_show_trace()
+{
+	if [ $# = 1 ];then
+    	cat $TRACE_ROOT/trace
+    else
+        cat $TRACE_ROOT/trace > $2
+	fi
+}
+
+########################################################################################################
+# clean trace, if $# = 2, while init trace var
+########################################################################################################
+function zt_clean_trace()
+{
+	if [ $# = 1 ];then
+    	echo > $TRACE_ROOT/trace
+    else
+        echo > $TRACE_ROOT/set_ftrace_pid
+        echo > $TRACE_ROOT/set_ftrace_filter
+        echo > $TRACE_ROOT/set_graph_function
+        echo 0 > $KP_ENABLE
+        echo > $KP_EVENT
+        echo > $TRACE_ROOT/trace
+	fi
+}
+
+########################################################################################################
+# list all set(func, pid, kprobe)
+########################################################################################################
+function zt_list_set()
+{
+    echo "============== kprobe ============="
+    if [ -f "$KP_EVENT" ]; then
+        cat $KP_EVENT
+    else
+        echo "#### no kprobe ####"
+    fi
+    echo "==============  pid   ============="
+    cat $TRACE_ROOT/set_ftrace_pid
+    echo "==============  bt    ============="
+    cat $TRACE_ROOT/set_ftrace_filter
+    echo "==============  graph ============="
+    cat $TRACE_ROOT/set_graph_function
+    echo "==============  stack ============="
+    cat $TRACE_ROOT/stack_trace_filter
+}
+
+########################################################################################################
+# set max graph depth
+########################################################################################################
+function zt_set_gd()
+{
+	if [ $# = 1 ];then
+    	cat $TRACE_ROOT/max_graph_depth
+    else
+        echo $2 > $TRACE_ROOT/max_graph_depth
+	fi
+}
+
+########################################################################################################
+# 设置kprobe
+########################################################################################################
+function zt_set_kp()
+{
+    echo 0 > $KP_ENABLE 2>/dev/null
+    echo "p:zwj $2 arg0=%r0 arg1=%r1 arg2=%r2 arg3=%r3" >> $KP_EVENT
+    echo "r:zwr $2 ret=\$retval" >> $KP_EVENT
+    echo 1 > $KP_ENABLE
+}
+
+########################################################################################################
+# trace entry
+########################################################################################################
+function zwtrace_entry()
+{
+	if [ $# = 0 ];then
+    	print_usage $@
+		exit 1
+	fi
+
+	case $1 in
+		-h)
+		print_usage $@
+		;;
+        
+        -path)
+        cd $TRACE_ROOT
+        ;;
+
+		-init)
+		zt_init
+		;;
+
+		-g)
+		zt_set_graph_func $@
+		;;
+
+		-p)
+		zt_set_pid $@
+		;;
+
+        -f)
+        zt_set_func $@
+        ;;
+
+		-s)
+		zt_show_trace $@
+		;;
+
+        -c)
+        zt_clean_trace $@
+        ;;
+
+		-l)
+		zt_list_set $@
+		;;
+
+        -gd)
+        zt_set_gd $@
+        ;;
+
+        -kp)
+        zt_set_kp $@
+        ;;
+
+        *)
+        echo "unknow cmd $1"
+        ;;
+	esac
+
+}
+
+zwtrace_entry $@

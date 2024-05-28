@@ -1,0 +1,145 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$(cd `dirname $0`; pwd)
+WORK_PATH=$ROOT_PATH/.work
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwtool
+
+
+########################################################################################################
+# 打印使用方法
+########################################################################################################
+function print_usage()
+{
+    echo "cmd           arg      description"
+    echo "----------    ------   --------------------"
+	echo "zwtool        -env     prompt env var"
+	echo "zwtool        -lsenv   ls env"
+    echo "zwtool        -init    init zwtool"
+}
+
+
+
+########################################################################################################
+# 工具初始化
+########################################################################################################
+function print_zwtool_env()
+{
+    echo -e "\033[33mSET ENV(.basrc or /etc/profile): \033[0m"
+	echo "step1: "
+	echo "    source $1/env"
+	echo "step2: "
+	echo "    source ~/.bashrc"
+	echo "    zwtool -init"
+}
+
+########################################################################################################
+# 环境初始化
+########################################################################################################
+function zwtool_env()
+{
+	# 查看环境
+	if [[ $# != 2 ]]; then
+		HOST=host
+	else
+		HOST=$2
+	fi
+
+	# 判断HOST是否存在
+	HOST_PATH=$WORK_PATH/$HOST
+	ENV_FILE=$HOST_PATH/env
+
+	# 判断主机路径是否存在
+	if [ -d "$HOST_PATH" ]; then
+		echo -e "\033[33mENV EXIST(.basrc or /etc/profile): \033[0m"
+		echo "    source $HOST_PATH/env"
+		exit
+	fi	
+
+	# 创建环境文件
+	mkdir -p $HOST_PATH/bin
+	touch $ENV_FILE
+
+	# 添加HOST路径
+	echo "export PATH_ZWTL_ROOT=$PWD" >> $ENV_FILE
+	echo "export PATH_ZWTL_HOST="$HOST_PATH >> $ENV_FILE
+	echo 'export PATH_ZWTL_INST=$PATH_ZWTL_HOST/bin' >> $ENV_FILE
+	echo 'export PATH=$PATH:$PATH_ZWTL_ROOT' >> $ENV_FILE
+	echo 'export PATH=$PATH:$PATH_ZWTL_INST' >> $ENV_FILE
+	echo "alias kd='source zwcd'" >> $ENV_FILE
+
+	# 打印环境信息
+	print_zwtool_env $HOST_PATH
+}
+
+########################################################################################################
+# 工具初始化
+########################################################################################################
+function zwtool_init()
+{
+	# 通用工具
+	$ROOT_PATH/zwcmd -init			# 初始化命令工具
+	$ROOT_PATH/zwvi  -init			# 初始化编辑工具
+	$ROOT_PATH/zwssh -init			# 初始化SSH工具
+	$ROOT_PATH/zwget -init			# 初始化GET工具
+	$ROOT_PATH/zwput -init			# 初始化PUT工具
+	$ROOT_PATH/zwpp  -init			# 初始化PP工具
+	$ROOT_PATH/zwcd  -init			# 初始化跳转工具
+
+	# 专用工具
+	$ROOT_PATH/zwsp  -init			# 初始化SP工具
+	$ROOT_PATH/zwcp  -init			# 初始化SP工具
+	$ROOT_PATH/zwtar -init          # 初始化tar工具
+	$ROOT_PATH/zwweb -init          # 初始化web工具
+}
+
+########################################################################################################
+# 工具清空
+########################################################################################################
+function zwtool_clean()
+{
+	find $ROOT_PATH -type l -delete
+	rm -rf $WORK_PATH
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwtool_entry()
+{
+	# 如果没写参数
+	if [ $# = 0 ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+        -edit)
+        vi $THIS_FILE
+        ;;
+
+		-env)
+		zwtool_env $@
+		;;
+
+		-lsenv)
+		ls $WORK_PATH
+		;;
+
+		-clean)
+		zwtool_clean
+		;;
+
+		-init)
+		zwtool_init $@
+		;;
+
+		*)
+		print_usage
+		;;
+	esac    
+}
+
+zwtool_entry $@

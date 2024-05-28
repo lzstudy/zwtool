@@ -1,0 +1,3 @@
+################# 驱动开发
+# 配合prinfo
+#define pr_fmt(fmt) "mcs: " fmt

@@ -1,0 +1,13 @@
+#################################### openEuler交叉环境
+# 1 进入网站
+http://121.36.84.172/dailybuild/EBS-openEuler-23.09/EBS-openEuler-23.09/embedded_img/aarch64/qemu-aarch64/
+
+# 2 选择软件(可以理解为
+openeuler-glibc-x86_64-openeuler-image-aarch64-qemu-aarch64-toolchain-23.09.sh
+
+# 3 在wsl上安装
+sh openeuler-glibc-x86_64-openeuler-image-aarch64-qemu-aarch64-toolchain-23.09.sh
+
+# 4 进入系统
+sudo -s
+/opt/openeuler/oe2309_aarch64/environment-setup-aarch64-openeuler-linux

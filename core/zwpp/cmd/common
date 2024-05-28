@@ -1,0 +1,5 @@
+# {systemd} {sys} {systemd-analyze} 
+systemd-analyze
+systemd-analyze blame                                   # 优化系统启动时间
+systemd-analyze critical-chain							# 优化具体时间
+systemctl disable NetworkManager-wait-online.service 	# 关闭服务

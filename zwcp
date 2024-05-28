@@ -1,0 +1,80 @@
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwcp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwcp
+LINK_FILE=$PATH_ZWTL_INST/kcp
+
+# WORK文件
+WORK_FILE=$WORK_PATH/current
+
+########################################################################################################
+# 帮助选项
+########################################################################################################
+function print_usage()
+{
+    echo "cmd           arg              val       description"
+    echo "----------    -------------    ------    --------------"
+	echo "kcp                            file      set cp file"
+    echo "kcp                                      kcp file"
+}
+
+########################################################################################################
+# zwcp初始化
+########################################################################################################
+function zwcp_init()
+{
+	mkdir -p $WORK_PATH
+	touch $WORK_FILE
+	ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwcp_entry()
+{
+	if [ $# = 0 ];then
+		FILE=`cat $WORK_FILE`
+		cp $FILE $PWD
+	fi
+
+	case $1 in
+		-h)
+		print_usage $@
+		;;
+
+		-init)
+		zwcp_init
+		;;
+
+		-e)
+		vi $WORK_FILE 
+		;;
+
+		-edit)
+		vi $THIS_FILE
+		;;
+
+		-export)
+		cp $WORK_FILE ./zcp.sh						# 将文件导出
+		chmod +x ./zcp.sh						
+		;;
+
+		-mv)									
+		echo "mv $PWD/$2 ." > $WORK_FILE			# 将文件写入cookies - mv
+		;;
+
+		.)
+		FILE=`cat $WORK_FILE`
+		cp $FILE $PWD
+		;;
+
+		*)
+		echo "$PWD/$1" > $WORK_FILE
+		;;
+	esac
+}
+
+zwcp_entry $@

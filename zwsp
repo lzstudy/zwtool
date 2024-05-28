@@ -1,0 +1,128 @@
+#!/bin/bash
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+CORE_PATH=$ROOT_PATH/core/zwsp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwsp
+LINK_FILE=$PATH_ZWTL_INST/sp
+
+
+# 获取模板CLASS
+SAMPLE_CLASS=$(ls -l ${CORE_PATH} |awk '/^d/ {print $NF}')
+
+########################################################################################################
+# 帮助选项
+########################################################################################################
+function print_usage()
+{
+	echo "usage : sp <class> <sample>"
+	echo ""
+	echo "class list:"
+	echo ${SAMPLE_CLASS}
+	echo ""
+	echo "optioin list:"
+	echo "-h     help"
+	echo "-ls    list sample      sp -ls <class>"
+	echo "-rp    replace key      sp -rp <dir/file> <key>"
+}
+
+########################################################################################################
+# 显示模板
+########################################################################################################
+function list_sample()
+{
+	local KEY
+	local STR
+	local CLASS=$2
+	local FILE_SP=$CORE_PATH/$CLASS/note.sp
+
+	# 读取文件
+	while read rows
+	do
+		KEY=`echo $rows | cut -d \" -f 1`
+		STR=`echo $rows | cut -d \" -f 2`
+		printf "%-20s" $KEY
+		echo $STR
+	done < $FILE_SP
+}
+
+########################################################################################################
+# 替换关键信息, 会替换xxx 和 XXX，文件夹名, 文件夹名
+########################################################################################################
+function replace_key()
+{
+	FILE=$1
+	KEY=$2
+
+	if [ -z $1 ] || [ -z $2 ];then
+		echo "sp -rp <dir> <key>"
+		exit
+	fi
+
+	# 配置大小写
+	LOWER=$2
+	UPPER=`echo $2 | tr a-z A-Z`
+
+	# 截取后缀
+	sed -i "s/xxx/$LOWER/g" `grep xxx -rl $FILE` 2> /dev/null
+	sed -i "s/XXX/$UPPER/g" `grep XXX -rl $FILE` 2> /dev/null
+
+	# 文件替换
+	if [[ ! -d $FILE ]];then
+		NEW_NAME=$(echo ${FILE/xxx/$LOWER})
+		mv $FILE $NEW_NAME
+	else
+		RESULT=$(find $FILE -name "xxx*")
+		arr=($RESULT)
+
+		for ITEM in ${arr[@]}
+		do
+			NEW_NAME=$(echo ${ITEM/xxx/$LOWER})
+			mv $ITEM $NEW_NAME
+		done
+
+		mv $FILE $KEY
+	fi
+}
+
+########################################################################################################
+# 模板入口
+########################################################################################################
+function zwsample_entry()
+{
+	# 如果参数个数小于2, 打印提示
+	if [ $# = 0 ];then
+    	print_usage $@
+		exit 1
+	fi
+
+	# 参数判断
+	case $1 in
+		-h)
+		print_usage $@
+		;;
+
+		-init)
+		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+		;;
+
+		-edit)
+		vi $THIS_FILE
+		;;
+
+		-ls)
+		list_sample $@
+		;;
+
+		-rp)
+		replace_key $2 $3
+		;;
+
+		*)
+		cp -rf ${CORE_PATH}/$1/$2 .
+		;;
+	esac
+}
+
+zwsample_entry $@

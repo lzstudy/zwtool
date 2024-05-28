@@ -1,0 +1,5 @@
+export PATH_ZWTL_INST=$PATH_ZWTL_HOST/bin
+
+export PATH=$PATH:$PATH_ZWTL_ROOT								# 自己的BIN路径
+export PATH=$PATH:$PATH_ZWTL_INST								# 自己的BIN路径
+alias kd='source zwcd'

@@ -1,0 +1,14 @@
+[user]
+	name = lizheng
+	email = lizheng1025@airdoc.com
+
+[alias]
+	br = branch
+	st = status
+	co = checkout
+	pl = pull
+	ps = push
+	ci = commit
+	cp = cherry-pick
+[color]
+	ui = auto

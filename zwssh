@@ -1,0 +1,129 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwscp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwssh
+LINK_FILE=$PATH_ZWTL_INST/ksh
+TEMP_FILE=$ROOT_PATH/scripts/templete/hosts
+
+# COOKIES文件
+HOST_FILE=$WORK_PATH/hosts
+source $HOST_FILE 2> /dev/null
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function print_usage()
+{
+    echo "cmd           [arg]            [val]     description"
+    echo "----------    -------------    ------    --------------"
+	echo "ksh           -init                      init ksh"
+    echo "ksh           -a/-e/-t/-s                ssh server"
+	echo "ksh           -key             'email'   gen key"
+	echo "ksh           -a/-e/-t/-s       key      cp ssh id to server"
+}
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function zwssh_init()
+{
+	mkdir -p $WORK_PATH
+	cp $TEMP_FILE $HOST_FILE
+	ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+}
+
+########################################################################################################
+# 生成ssh-key
+########################################################################################################
+function zwssh_gen_key()
+{
+	ssh-keygen -t rsa -b 4096 -C $2
+}
+
+########################################################################################################
+# ssh主机
+########################################################################################################
+function ssh_work()
+{
+	HOST=
+
+	case $1 in
+		-a)
+		HOST=$HOST_ZW
+		;;
+
+		-s)
+		HOST=$HOST_SERVER
+		;;
+
+		-b)
+		HOST=$HOST_BOARD
+		;;
+
+		-t)
+		HOST=$HOST_TMP
+		;;
+	esac
+	
+	arr=(`echo $HOST | tr ':' ' '`)
+
+	# 1个参数为登陆，两个参数为拷贝
+	if [ $# = 1 ];then
+		ssh ${arr[0]}
+		exit
+	fi
+
+	# 2个参数
+	case $2 in
+		key)
+		ssh-copy-id ${arr[0]}
+		;;
+
+		ping)
+		HOST=${arr[0]}
+		IP=${HOST#*@}
+		ping $IP 
+		;;
+	esac
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwssh_entry()
+{
+	# 如果没写参数, 或帮助命令, 则打印帮助信息
+	if [ $# = 0 ] || [ $1 = '-h' ] || [ $1 = '--help' ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+		-init)
+		zwssh_init
+		;;
+
+		-edit)
+		vi $THIS_FILE
+		;;
+
+		-key)
+		zwssh_gen_key $@
+		;;
+
+		-e)
+		vi $HOST_FILE
+		;;
+
+		*)
+		ssh_work $@
+		;;
+	esac
+}
+
+zwssh_entry $@
+

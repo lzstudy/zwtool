@@ -1,0 +1,307 @@
+#!/bin/bash
+########################################################################################################
+# sample to use ftrace
+########################################################################################################
+
+TRACE_ROOT=/sys/kernel/tracing
+KP_EVENT=$TRACE_ROOT/kprobe_events
+KP_ENABLE=$TRACE_ROOT/events/kprobes/enable
+
+# support tracer
+tracer=(function function_graph kprobe)
+
+########################################################################################################
+# usage help
+########################################################################################################
+function print_usage()
+{
+    echo ""
+	echo "usage : zwtrace/kt <option> [param]"
+	echo "----------------------------------------------"
+	echo "-h                         print usage"
+	echo "-init                      should use this cmd first"
+    echo "-t      [num]              lookup tracer or set tracer"
+    echo "-s      <pid/func>         set filter pid or func"
+    echo "-c      [pid/func/all]     clean trace or pid/func/all"    
+    echo "-l                         show all trace set"
+    echo "-gd     [depth]            show graph tracer depth or set depth"
+    echo "----------------------------------------------"
+}
+
+########################################################################################################
+# zwtrace init
+########################################################################################################
+function zwtrace_init()
+{
+    # mount tracefs
+    mount -t tracefs tracefs $TRACE_ROOT 2>/dev/null
+
+    # set default graph depth
+    echo 5 > $TRACE_ROOT/max_graph_depth
+
+    # enable stack tracer
+    echo 1 > /proc/sys/kernel/stack_tracer_enabled
+}
+
+########################################################################################################
+# demo flow
+########################################################################################################
+function zwtrace_flow()
+{
+    echo "------------------ ftrace ------------------"
+    echo "[1]   kt -init                # init ftrace soft"
+    echo "[2]   kt -t 0/1/...           # set tracer type"
+    echo "[3]   kt -s pid/func          # set filter"
+    echo "[4]   kt                      # dispaly trace"
+    echo "------------------ kprobe ------------------"
+    echo "[1]   kt -kp fun              # set kprobe"
+    echo "[1]   kt -kp -k/-j/-r fun     # set kprobe/jprobe/retprobe"
+    echo "[1]   kt -kp                  # lookup current kprobe"
+    echo "---------------------------------------------"
+}
+
+
+########################################################################################################
+# clean trace, if $# = 2, while init trace var
+########################################################################################################
+function zwtrace_clean()
+{
+	if [ $# = 1 ];then
+    	echo > $TRACE_ROOT/trace
+        exit
+    fi
+
+	case $2 in
+		pid)
+		echo > $TRACE_ROOT/set_ftrace_pid
+		;;
+
+        func)
+        echo > $TRACE_ROOT/set_graph_function
+        ;;
+
+        *)
+        echo > $TRACE_ROOT/set_ftrace_pid
+        echo > $TRACE_ROOT/set_graph_function
+        echo > $TRACE_ROOT/set_ftrace_filter
+        echo 0 > $KP_ENABLE
+        echo > $KP_EVENT
+        echo > $TRACE_ROOT/trace
+        ;;
+	esac
+}
+
+########################################################################################################
+# list all set(func, pid, kprobe)
+########################################################################################################
+function zwtrace_list_filter()
+{
+    echo "============== kprobe ============="
+    if [ -f "$KP_EVENT" ]; then
+        cat $KP_EVENT
+    else
+        echo "#### no kprobe ####"
+    fi
+    echo "==============  pid   ============="
+    cat $TRACE_ROOT/set_ftrace_pid
+    echo "==============  bt    ============="
+    cat $TRACE_ROOT/set_ftrace_filter
+    echo "==============  graph ============="
+    cat $TRACE_ROOT/set_graph_function
+    echo "==============  stack ============="
+    cat $TRACE_ROOT/stack_trace_filter
+}
+
+########################################################################################################
+# print backtrace
+########################################################################################################
+function zwtrace_backtrace()
+{
+    cat $TRACE_ROOT/stack_trace
+}
+
+########################################################################################################
+# set max graph depth
+########################################################################################################
+function zt_set_gd()
+{
+	if [ $# = 1 ];then
+    	cat $TRACE_ROOT/max_graph_depth
+    else
+        echo $2 > $TRACE_ROOT/max_graph_depth
+	fi
+}
+
+########################################################################################################
+# 设置kprobe
+# kt -kp fun
+# kt -kp -k/-j/-r fun
+########################################################################################################
+function zwtrace_set_kprobe()
+{
+    if [ $# = 1 ];then
+        cat $KP_EVENT
+        return
+    fi
+
+    # 设置nop tracer
+    # echo nop > $TRACE_ROOT/current_tracer
+
+    # 如果只有两个参数, 则默认kprobe
+    if [ $# = 2 ];then
+        echo "p:$2 $2" >> $KP_EVENT
+        echo 1 > $KP_ENABLE
+        return
+    fi
+
+
+    PROBE=
+
+    # 如果有3个参数, 表示希望同时用k/j/r probe
+    case $2 in
+        -k)
+        PROBE=$3_k
+        echo "p:$PROBE $3" >> $KP_EVENT
+        ;;
+
+        -j)
+        PROBE=$3_j
+        echo "p:$JPROBE $2 arg0=%r0 arg1=%r1 arg2=%r2 arg3=%r3" >> $KP_EVENT
+        ;;
+
+        -r)
+        PROBE=$3_r
+        echo "r:$RPROBE $2 ret=\$retval" >> $KP_EVENT
+        ;;
+    esac
+    
+    # 使能全部探针
+    echo 1 > $KP_ENABLE
+}
+
+########################################################################################################
+# 设置trace类型, arg1忽略, arg2从0 - N
+########################################################################################################
+function zwtrace_set_tracer()
+{
+    CNT=0
+    TRACER=
+
+    # 如果没有参数, 则打印支持的tracer
+    if [ $# = 1 ];then
+        for ITEM in ${tracer[@]}
+        do
+            echo "$CNT    ${ITEM}"
+            CNT=$[$CNT+1]
+        done
+        exit
+    fi
+
+    case $2 in 
+        2)
+        echo nop > $TRACE_ROOT/current_tracer
+        ;;
+
+        *)
+        echo ${tracer[$2]} > $TRACE_ROOT/current_tracer
+        ;;
+    esac
+}
+
+########################################################################################################
+# 设置过滤, 可以选择函数或pid
+########################################################################################################
+function zwtrace_set_filter
+{
+    # 清空trace
+    echo > $TRACE_ROOT/trace
+    echo 0 > $TRACE_ROOT/tracing_on
+
+    # 如果是pid直接设置
+    if echo "$1" | grep -q "^[0-9]*$"; then
+        echo $1 > $TRACE_ROOT/set_ftrace_pid
+        return
+    fi
+
+    # 如果是函数, 则判断是哪个tracer的函数
+    CURRENT_TRACER=$(cat $TRACE_ROOT/current_tracer)
+
+    # function trace会开启栈回溯
+    if [[ $CURRENT_TRACER == "function" ]];then
+        echo $1 > $TRACE_ROOT/set_ftrace_filter
+        echo 1 > $TRACE_ROOT/options/func_stack_trace
+    else
+        echo $1 > $TRACE_ROOT/set_graph_function
+    fi
+
+    # 开启trace
+    echo 1 > $TRACE_ROOT/tracing_on
+}
+
+########################################################################################################
+# 显示zwtrace
+########################################################################################################
+function zwtrace_show()
+{
+    cat $TRACE_ROOT/trace
+}
+
+########################################################################################################
+# trace entry
+########################################################################################################
+function zwtrace_entry()
+{
+	if [ $# = 0 ];then
+    	zwtrace_show
+		exit 1
+	fi
+
+	case $1 in
+		-h)
+		print_usage $@
+		;;
+        
+		-init)
+		zwtrace_init
+		;;
+
+        -flow)
+        zwtrace_flow
+        ;;
+        
+        -t)
+        zwtrace_set_tracer $@
+        ;;
+
+        -s)
+        zwtrace_set_filter $2
+        ;;
+
+        -c)
+        zwtrace_clean $@
+        ;;
+
+		-l)
+		zwtrace_list_filter $@
+		;;
+
+        -bt)
+        zwtrace_backtrace $@
+        ;;
+
+        -gd)
+        zt_set_gd $@
+        ;;
+
+        -kp)
+        zwtrace_set_kprobe $@
+        ;;
+
+        *)
+        echo "unknow cmd $1"
+        ;;
+	esac
+
+}
+
+zwtrace_entry $@

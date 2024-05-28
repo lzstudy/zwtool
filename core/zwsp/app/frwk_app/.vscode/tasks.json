@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "project": "module",
+
+    "tasks": [
+        /* 初始化任务 */
+        {
+            "label"         : "init",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "mkdir -p _build",
+            "args"          : [],
+        },
+
+        /* CMAKE初始化任务 */
+        {
+            "label"         : "cmake",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "cd _build && cmake ..",
+            "args"          : [],
+            "dependsOn"     : ["init"],
+        },
+
+        /* 编译任务 */
+        {
+            "label"         : "build",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}/_build"},
+            "command"       : "make",
+            "args"          : [],
+            "dependsOn"     : ["cmake"],
+        },
+
+        /* 推送任务 */
+        {
+            "label"         : "push",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}/_build"},
+            "command"       : "zwput -e main",
+            "args"          : [],
+            "isBackground"  : false,
+            "group"         : {"kind": "build", "isDefault": true},
+            "dependsOn"     : ["build"],
+            "problemMatcher": "$msCompile",
+        }
+    ]
+}

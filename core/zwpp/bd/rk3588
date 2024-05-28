@@ -1,0 +1,49 @@
+############################ compony
+# wifi账号密码
+HuaZhi
+Hz12345678
+网关 - 192.168.40.254
+# 
+
+############################ 混和部署
+# 1 加载驱动
+insmod mcs_km.ko
+# 2 下核
+
+# 3 运行micad
+
+./micad
+
+# 4 启动
+./mica.py create /etc/mica/cpu6.conf
+
+####################### 测试
+mount -t vfat /dev/mmcblk0p4 /mnt/mmcblk0p4
+
+############################ RK3588
+
+# 导出环境
+export PATH=$PATH:/opt/atk-dlrk356x-toolchain/usr/bin
+aarch64-buildroot-linux-gnu-gcc
+
+# 内核配置
+kernel/linux-5.10/arch/arm64/configs/rockchip_linux_defconfig
+
+# 设备树
+/home/zw/hz/edge/kernel/linux-5.10/arch/arm64/boot/dts/rockchip/rk3588-toybrickb-x0.dtsi
+/home/zw/hz/edge/kernel/linux-5.10/arch/arm64/boot/dts/rockchip/rk3588-toybrickb-x0-linux.dtb
+/home/zw/hz/edge/kernel/linux-5.10/arch/arm64/boot/dts/rockchip/rk3588.dtsi
+
+# mmu配置
+test_Debug/bare_metal/base/platform/armv8/mmu/mmu.c
+
+# rtos程序入口
+vi /src/config/prt_config.c
+
+# libbound
+git clone https://gitee.com/openeuler/libboundscheck.git
+aarch64-target-linux-gnu-
+
+# atalas
+/home/zw/atalas/ascend/dtb/dts/hi1910b/hi1910BL/hi1910B-asic-M150-B51.dts
+dd if=Image of=/dev/sda count=61440 seek=32768 bs=512

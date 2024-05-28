@@ -1,0 +1,11 @@
+# [-a] HOST - MY SERVER
+HOST_ZW=root@120.48.82.24:/root/share
+
+# [-s] HOST - COMPONY SERVER
+HOST_SERVER=root@192.168.1.21:/root/
+
+# [-e] HOST - BOARD
+HOST_BOARD=root@192.168.1.21:/root/
+
+# [-t] HOST - TMP
+HOST_TMP=root@192.168.1.21:/root/
