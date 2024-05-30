@@ -146,7 +146,7 @@ function zwcmd_entry()
         vi $THIS_FILE
         ;;
 
-        -work)
+        -cd)
         cd $WORK_PATH
         ;;
 

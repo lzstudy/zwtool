@@ -111,6 +111,10 @@ function zwsample_entry()
 		vi $THIS_FILE
 		;;
 
+		-cd)
+		cd $WORK_PATH
+		;;
+
 		-ls)
 		list_sample $@
 		;;

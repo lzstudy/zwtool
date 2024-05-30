@@ -1,0 +1,3 @@
+# {file} 重要文件
+test_Debug/bare_metal/ut/src/openamp/common.h                       -        核间中断配置
+test_Debug/bare_metal/base/platform/armv8/rk3588/cpu_config.h       -        CPU配置

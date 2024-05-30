@@ -68,7 +68,7 @@ function zwcp_entry()
 
 		.)
 		FILE=`cat $WORK_FILE`
-		cp $FILE $PWD
+		cp $FILE $PWD -rf
 		;;
 
 		*)

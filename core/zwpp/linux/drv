@@ -1,3 +1,6 @@
 ################# 驱动开发
 # 配合prinfo
 #define pr_fmt(fmt) "mcs: " fmt
+
+# {misc}
+cp xxx.ko /lib/modules/$(uname-r)/xxx.ko
