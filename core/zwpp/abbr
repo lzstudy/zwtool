@@ -30,12 +30,23 @@ MIoT         massive Iot                        大规模物联网
 IoMT                                            军事物联网
 IOBT         internet of battlefiled things     战场物联网
 
-RPM包制作
+# ATF
+TEE          Trusted execution environment           可信执行环境
+SMC          Secure Monitor Call                     安全监视器调用
+REE          Rinch Execution Environment             富执行环境
+CA           client application                      富执行环境下应用程序
+TA           trusted application                     可信执行环境下应用程序
+SMCCC        Secure Monitro Call Calling Convention  安全监视调用约定
+HVC          hypervisor call                         虚拟机管理程序调用
+OEN          owning entity numbers                   SMCCC入口号
+SCP          system contoller processor              系统管理核(本质上就是cortex-M核)
+AP           application processor                   应用处理器
+FMU          firmware update                         固件更新
+MCP          management control processor            管理控制处理器
+
 
 # 新技术
 PSCI - aarch64电源管理方案, 支持
 
 
 # 有待学
-python
-cmd 命令 集成 find grep
