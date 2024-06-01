@@ -112,7 +112,7 @@ function zwsample_entry()
 		;;
 
 		-cd)
-		cd $WORK_PATH
+		cd $CORE_PATH
 		;;
 
 		-ls)

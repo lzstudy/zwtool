@@ -1,3 +1,7 @@
 # {file} 重要文件
 test_Debug/bare_metal/ut/src/openamp/common.h                       -        核间中断配置
 test_Debug/bare_metal/base/platform/armv8/rk3588/cpu_config.h       -        CPU配置
+
+################################################### 混和部署
+# {file} 重要文件
+src/mica_linux/library/remoteproc/baremetal_rproc.c                 -        最底层reproc_ops赋值处
