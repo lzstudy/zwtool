@@ -11,3 +11,6 @@ jounrnalctl                                             # 查看所有日志
 cp xxx.service /usr/lib/systemd/system/micad.service    # 拷贝服务
 systemctl daemon-reload                                 # 重载服务
 systemctl enable micad                                  # 使能服务
+
+# {rpm}
+rpm -nq <xxx>                                           # 查看rpm

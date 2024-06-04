@@ -3,3 +3,5 @@ bl1 - bootrom, 从rom启动
 bl2 - 初始化内存, 运行完后从内存消失
 bl3 - runtime, 
 
+
+
