@@ -1,4 +1,0 @@
-############## 设备树解析
-# 1 解析设备树
-ret = of_property_read_u32_array(nd, "zw", arry, 4);
-CK_RET(ret);

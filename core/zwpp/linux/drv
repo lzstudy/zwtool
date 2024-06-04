@@ -1,6 +1,9 @@
-################# 驱动开发
-# 配合prinfo
-#define pr_fmt(fmt) "mcs: " fmt
+################################################# {drv} {driver} 驱动开发
 
-# {misc}
-cp xxx.ko /lib/modules/$(uname-r)/xxx.ko
+#################### {base}
+cp xxx.ko /lib/modules/$(uname-r)/xxx.ko                            # 默认驱动路径
+
+
+#################### {func}
+ret = of_property_read_u32_array(nd, "zw", arry, 4);                # 读取属性
+CK_RET(ret);
