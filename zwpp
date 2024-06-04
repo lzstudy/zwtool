@@ -108,6 +108,11 @@ function zwpp_entry()
 		zwpp_edit $@
 		;;
 
+		-grep)
+		cd $CORE_PATH
+		grep $2 -nr
+		;;
+
 		-edit)
 		vi $THIS_FILE
 		;;

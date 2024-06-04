@@ -1,2 +1,5 @@
-# 打印
+# {语法} {base}
 print("输出", plat)
+
+# {env} 
+sudo update-alternatives --config python                    -           切换python版本

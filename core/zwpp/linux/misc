@@ -3,5 +3,14 @@ bl1 - bootrom, 从rom启动
 bl2 - 初始化内存, 运行完后从内存消失
 bl3 - runtime, 
 
+# {misc}
+usermod -p "" root                  -               清空密码
 
+# {buildroot}
+make graph-depends                  -               查看图
+make <pkg>-graph-depends            -               查看依赖关系
+make graph-build                    -               output/graphs中生成每个软件包构建时间的直方图 build.hist-duration.pdf
+rm output/build/xxx                 -               重新构建某个buildroot包
 
+# {编译软件包}
+./bootstrap --prefix=/opt/cmake     -               编译软件包
