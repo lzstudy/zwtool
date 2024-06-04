@@ -13,4 +13,5 @@ systemctl daemon-reload                                 # 重载服务
 systemctl enable micad                                  # 使能服务
 
 # {rpm}
-rpm -nq <xxx>                                           # 查看rpm
+rpm -ivh <xxx>                                          # 安装rpm
+rpm -qf <xxx>                                           # 查看rpm

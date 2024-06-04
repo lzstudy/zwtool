@@ -52,11 +52,16 @@ function zwpp_edit()
 function do_prompt()
 {
 	FILE=$CORE_PATH/$1
-	KEY={$2}
+	KEY={$2
 
 	case $# in
 		1)
-		cat $FILE						# 查看全部信息
+		if [ -f $FILE ]; then
+			cat $FILE						# 查看全部信息
+		else
+			cd $CORE_PATH
+			grep {$1 -nr
+		fi
 		;;
 
 		2)				

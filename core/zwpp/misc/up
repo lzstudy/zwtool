@@ -1,7 +1,14 @@
-# {file} 重要文件
+# {up} {uniprotn}
+
+############################################################### {file}
+# 处理器配置文件
 test_Debug/bare_metal/ut/src/openamp/common.h                       -        核间中断配置
 test_Debug/bare_metal/base/platform/armv8/rk3588/cpu_config.h       -        CPU配置
 
-################################################### 混和部署
-# {file} 重要文件
+# 底层库文件
 src/mica_linux/library/remoteproc/baremetal_rproc.c                 -        最底层reproc_ops赋值处
+
+# 应用文件
+test_Debug/bare_metal/base/platform/armv8/init.c                    -        App入口
+test_Debug/bare_metal/ut/common/ostest.c                            -        测试程序入口(TaskEntry)
+test_Debug/bare_metal/ut/src/openamp/rpmsg_service.c                -        所有shell命令编写处
