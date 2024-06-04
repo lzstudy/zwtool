@@ -21,7 +21,6 @@ TLB          translation lookaside buffer       页表缓冲
 EL           exception level                    异常等级
 
 # ARM
-SVC          supervisor call                    用户空间调用内核时，通过SVC进入到内核
 ATF          arm trusted firmware               arm可信固件
 
 # 军事
@@ -32,12 +31,13 @@ IOBT         internet of battlefiled things     战场物联网
 
 # ATF
 TEE          Trusted execution environment           可信执行环境
-SMC          Secure Monitor Call                     安全监视器调用
+SVC          supervisor call                    用户空间调用内核时，通过SVC进入到内核
+HVC          hypervisor call                         虚拟机管理程序调用
+SMC          Secure Monitor Call                     安全监视器调用, 安全状态切换, 从非安全切换到安全(EL1 -> EL3)
 REE          Rinch Execution Environment             富执行环境
 CA           client application                      富执行环境下应用程序
 TA           trusted application                     可信执行环境下应用程序
 SMCCC        Secure Monitro Call Calling Convention  安全监视调用约定
-HVC          hypervisor call                         虚拟机管理程序调用
 OEN          owning entity numbers                   SMCCC入口号
 SCP          system contoller processor              系统管理核(本质上就是cortex-M核)
 AP           application processor                   应用处理器

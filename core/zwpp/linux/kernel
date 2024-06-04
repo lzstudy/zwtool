@@ -1,3 +1,11 @@
 ################################################# {kern} {kernel} 内核
 #################### {base}
-#define pr_fmt(fmt) "mcs: " fmt                             -           配合pr_info
+#define pr_fmt(fmt) "mcs: " fmt                            # 配合pr_info
+
+#################### {asm}
+# {com} {common}
+MSR x0, CPSR                       # 特殊CPSR => 通用x0
+MRS CPSR, x0                       # 通用x0 => 特殊CPSR
+
+# {aarch64}
+VBAR_EL1						   # 中断向量表level1的地址
