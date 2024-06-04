@@ -12,12 +12,12 @@ TEE                                             可信执行环境
 REE                                             不可信执行环境
 
 # 缓存、内存
-PTE          page table entry                   页表项
-PGD          page global directory              页面目录
-PUD          page upper directory               页上层目录
-PMD          page middle directory              页中层目录
+PGD          page global directory              第一层页表，页面目录, 全局页表
+PUD          page upper directory               第二层页表，页上层目录
+PMD          page middle directory              第三层页表，页中层目录
+PTE          page table entry                   第四层页表，页表/页表项, (地址 + 权限)
 PT           page table                         页表
-TLB          translation lookaside buffer       页表缓冲
+TLB          translation lookaside buffer       页表缓冲, 快表
 EL           exception level                    异常等级
 
 # ARM

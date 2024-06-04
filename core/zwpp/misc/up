@@ -2,13 +2,18 @@
 
 ############################################################### {file}
 # 处理器配置文件
-test_Debug/bare_metal/ut/src/openamp/common.h                       -        核间中断配置
-test_Debug/bare_metal/base/platform/armv8/rk3588/cpu_config.h       -        CPU配置
+/src/config/prt_config.c                                            # main
+test_Debug/bare_metal/ut/src/openamp/common.h                       # 核间中断配置
+test_Debug/bare_metal/base/platform/armv8/rk3588/cpu_config.h       # CPU配置
 
-# 底层库文件
-src/mica_linux/library/remoteproc/baremetal_rproc.c                 -        最底层reproc_ops赋值处
+# 驱动文件
+test_Debug/bare_metal/base/platform/armv8/rk3588/hisi_print/hisi_dw_uart.c  # 串口底层驱动文件(波特率等设置)
+
+# 库文件
+src/mica_linux/library/remoteproc/baremetal_rproc.c                 # 最底层reproc_ops赋值处
+test_Debug/bare_metal/base/platform/armv8/print.c                   # 串口调试
 
 # 应用文件
-test_Debug/bare_metal/base/platform/armv8/init.c                    -        App入口
-test_Debug/bare_metal/ut/common/ostest.c                            -        测试程序入口(TaskEntry)
-test_Debug/bare_metal/ut/src/openamp/rpmsg_service.c                -        所有shell命令编写处
+test_Debug/bare_metal/base/platform/armv8/init.c                    # App入口
+test_Debug/bare_metal/ut/common/ostest.c                            # 测试程序入口(TaskEntry)
+test_Debug/bare_metal/ut/src/openamp/rpmsg_service.c                # 所有shell命令编写处

@@ -9,3 +9,20 @@ MRS CPSR, x0                       # 通用x0 => 特殊CPSR
 
 # {aarch64}
 VBAR_EL1						   # 中断向量表level1的地址
+CurrentEL						   # 当前EL等级(EL2还是EL1)
+MSP                                # 主堆栈指针
+VTOR                               # 中断向量表偏移寄存器
+
+CPSID    I                         # 关中断 (local_irq_disable, 只是对处理器操作, 没有对GIC操作)
+CPSIE    I                         # 开中断
+CPSID    F                         # 关异常
+CPSIE    F                         # 开异常 
+
+
+#################### {TMP}
+GIC基础地址                        # 0xd0000000
+UART地址                           # 0x4C010000
+DTB地址                            # 0x60000000
+UART寄存器                         # 0xfdf8000
+
+
