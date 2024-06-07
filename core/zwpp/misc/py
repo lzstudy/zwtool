@@ -1,5 +1,6 @@
 # {语法} {base}
-print("输出", plat)
+print("输出", plat)		    # 打印"输出plat“
+print(var)					# 直接打印变量
 
 # {env} 
 sudo update-alternatives --config python                    -           切换python版本
