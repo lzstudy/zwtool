@@ -49,6 +49,7 @@ function put_file()
 		;;
 	esac
 
+
 	scp -r $2 $SCP_DIR
 }
 
