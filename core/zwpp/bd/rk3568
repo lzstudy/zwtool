@@ -1,3 +1,4 @@
-# 设备树
-vi ./kernel/arch/arm64/boot/dts/rockchip/rk3568-atk-evb1-ddr4-v10.dtsi       -      板子设备树
-vi ./kernel/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+################################################# {rk3568}
+# {file}
+/kernel/arch/arm64/boot/dts/rockchip/rk3568-atk-evb1-ddr4-v10.dtsi     # 板子设备树
+/kernel/arch/arm64/boot/dts/rockchip/rk3568.dtsi
