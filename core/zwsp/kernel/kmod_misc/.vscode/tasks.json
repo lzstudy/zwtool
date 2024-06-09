@@ -4,12 +4,21 @@
 
     "tasks": [
         {
-            "label"         : "push",
+            "label"         : "build_app",
             "type"          : "shell",
-            "options"       : { "cwd": "${workspaceFolder}"},
+            "options"       : { "cwd": "${workspaceFolder}/app"},
             "command"       : "./.build.sh",
             "args"          : [],
-            "isBackground"  : false,
+            "group"         : {"kind": "build", "isDefault": true},
+            "problemMatcher": "$msCompile",
+        },
+
+        {
+            "label"         : "build_kmod",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}/kmod"},
+            "command"       : "./.build.sh",
+            "args"          : [],
             "group"         : {"kind": "build", "isDefault": true},
             "problemMatcher": "$msCompile",
         }
