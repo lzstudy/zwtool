@@ -80,13 +80,14 @@ function zwtool_env()
 function zwtool_init()
 {
 	# 通用工具
-	$ROOT_PATH/zwcmd -init			# 初始化命令工具
-	$ROOT_PATH/zwvi  -init			# 初始化编辑工具
-	$ROOT_PATH/zwssh -init			# 初始化SSH工具
-	$ROOT_PATH/zwget -init			# 初始化GET工具
-	$ROOT_PATH/zwput -init			# 初始化PUT工具
-	$ROOT_PATH/zwpp  -init			# 初始化PP工具
-	$ROOT_PATH/zwcd  -init			# 初始化跳转工具
+	$ROOT_PATH/zwcmd  -init			# 初始化命令工具
+	$ROOT_PATH/zwvi   -init			# 初始化编辑工具
+	$ROOT_PATH/zwssh  -init			# 初始化SSH工具
+	$ROOT_PATH/zwget  -init			# 初始化GET工具
+	$ROOT_PATH/zwput  -init			# 初始化PUT工具
+	$ROOT_PATH/zwping -init			# 初始化SSH工具
+	$ROOT_PATH/zwpp   -init			# 初始化PP工具
+	$ROOT_PATH/zwcd   -init			# 初始化跳转工具
 
 	# 专用工具
 	$ROOT_PATH/zwsp  -init			# 初始化SP工具
