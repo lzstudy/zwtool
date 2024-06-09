@@ -7,7 +7,7 @@
             "label"         : "push",
             "type"          : "shell",
             "options"       : { "cwd": "${workspaceFolder}"},
-            "command"       : "./build.sh",
+            "command"       : "./.build.sh",
             "args"          : [],
             "isBackground"  : false,
             "group"         : {"kind": "build", "isDefault": true},

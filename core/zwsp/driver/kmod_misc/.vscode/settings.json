@@ -64,6 +64,7 @@
         "mm_comm_vi.h": "c",
         "input.h": "c",
         "motor.h": "c",
-        "motor_def.h": "c"
+        "motor_def.h": "c",
+        "ckerr.h": "c"
     }
 }

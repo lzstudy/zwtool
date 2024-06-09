@@ -1,3 +1,4 @@
+#define pr_fmt(fmt) "xxx: " fmt 
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/device.h>
@@ -9,6 +10,7 @@
 #include <linux/uaccess.h>
 #include <linux/interrupt.h>
 #include <linux/fs.h>
+#include <linux/mm.h>
 #include "ckerr.h"
 
 typedef struct _xxx_priv {
@@ -32,8 +34,32 @@ typedef struct _xxx_priv {
 static int xxx_open(struct inode *inode, struct file *filp)
 {
 	xxx_priv *priv = to_xxx_priv(filp->private_data);
-	LOG_I("priv addr = %p", priv);
-	LOG_I("xxx open");
+	LOG_I("xxx open priv = %p", priv);
+	return 0;
+}
+
+/**************************************************************************************************
+ * @brief  : mmap
+ * @param  : inode
+ * @param  : 文件信息
+**************************************************************************************************/
+static int xxx_mmap(struct file *file, struct vm_area_struct *vma)
+{
+	int ret;
+	uint32_t size;
+
+	size = vma->vm_start - vma->vm_end;
+
+	/* 修改权限为不缓存 */
+	vma->vm_page_prot = phys_mem_access_prot(file, vma->vm_pgoff,
+						 size,
+						 vma->vm_page_prot);
+
+	LOG_I("vmstart = %lx, vmend = %lx, phy = %lx", vma->vm_start, vma->vm_end, vma->vm_pgoff);
+
+	/* 重新映射 */
+	ret = remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, size, vma->vm_page_prot);
+	CI_RET_U(ret, remap_pfn_range);
 	return 0;
 }
 
@@ -73,6 +99,7 @@ static long xxx_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 static const struct file_operations xxx_fops = {
 	.owner	 = THIS_MODULE,
 	.open	 = xxx_open,
+	.mmap    = xxx_mmap,
 	.release = xxx_release,
 	.unlocked_ioctl = xxx_ioctl,
 };
@@ -155,6 +182,11 @@ static struct attribute_group xxx_attr_group = {
 	.attrs = xxx_attr,
 };
 
+static const struct attribute_group *xxx_attribute_groups[] = {
+	&xxx_attr_group,
+	NULL,
+};
+
 /**************************************************************************************************
  * @brief  : 解析设备树
  * @param  : 私有数据
@@ -165,11 +197,11 @@ static int parse_dtb(xxx_priv *priv, struct device *dev, struct device_node *np)
 {
 	/* 获取引脚 */
 	priv->pin = of_get_named_gpio(np, "gpios", 0);
-	DS_RET(priv->pin, of_get_named_gpio);
+	CI_RET_U(priv->pin, of_get_named_gpio);
 
 	/* 获取中断号 */
 	priv->irq = gpio_to_irq(priv->pin);
-	DS_RET(priv->pin, gpio_to_irq);
+	CI_RET_U(priv->pin, gpio_to_irq);
 	return 0;
 }
 
@@ -199,15 +231,15 @@ static int set_hardware(xxx_priv *priv, struct device *dev)
 
 	/* 申请GPIO */
 	ret = devm_gpio_request(dev, priv->pin, "xxx-pin");
-	DS_RET(ret, devm_gpio_request);
+	CI_RET_U(ret, devm_gpio_request);
 
 	/* 设置输出 */
 	ret = gpio_direction_input(priv->pin);
-	DS_RET(ret, gpio_direction_input);
+	CI_RET_U(ret, gpio_direction_input);
 
 	/* 设置中断 */
 	ret = devm_request_irq(dev, priv->irq, xxx_irq_handler, IRQF_TRIGGER_FALLING|IRQF_TRIGGER_RISING, "xxx-irq", priv);
-	DS_RET(ret, devm_request_irq);
+	CI_RET_U(ret, devm_request_irq);
 
 	return 0;
 }
@@ -225,28 +257,25 @@ static int xxx_probe(struct platform_device *pdev)
 
 	/* 申请内存空间 */
 	priv = devm_kzalloc(dev, sizeof(xxx_priv), GFP_KERNEL);
-	DP_RET(priv, devm_kzalloc);
+	CI_RET_P(priv, devm_kzalloc);
 
 	/* 初始化MISC设备 */
-	priv->dev.name  = "xxx";
-	priv->dev.minor = MISC_DYNAMIC_MINOR;
-	priv->dev.fops  = &xxx_fops;
+	priv->dev.name   = "xxx";
+	priv->dev.minor  = MISC_DYNAMIC_MINOR;
+	priv->dev.fops   = &xxx_fops;
+	priv->dev.groups = xxx_attribute_groups;
 
 	/* 解析设备树 */
 	ret = parse_dtb(priv, dev, dev->of_node);
-	CK_RET(ret < 0, ret);
+	CK_RET_U(ret);
 
 	/* 设置硬件 */
 	ret = set_hardware(priv, dev);
-	CK_RET(ret < 0, ret);
+	CK_RET_U(ret);
 	
 	/* 注册MISC设备 */
 	ret = misc_register(&priv->dev);
-	DS_RET(ret, misc_register);
-
-	/* 创建属性文件 */
-	ret = sysfs_create_group(&dev->kobj, &xxx_attr_group);
-	DS_RET(ret, sysfs_create_group);
+	CI_RET_U(ret, misc_register);
 
 	/* 保存私有数据 */
 	platform_set_drvdata(pdev, priv);
@@ -262,9 +291,6 @@ static int xxx_probe(struct platform_device *pdev)
 static int xxx_remove(struct platform_device *pdev)
 {
 	xxx_priv *priv = platform_get_drvdata(pdev);
-
-	/* 移除属性 */
-	sysfs_remove_group(&pdev->dev.kobj, &xxx_attr_group);
 
 	/* 注销MISC设备 */
 	misc_deregister(&priv->dev);
