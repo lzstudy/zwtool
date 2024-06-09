@@ -1,1 +1,0 @@
-/usr/bin/cc    CMakeFiles/main.dir/codestd.c.o CMakeFiles/main.dir/main.c.o  -o main  -lpthread 

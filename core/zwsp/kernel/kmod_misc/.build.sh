@@ -1,2 +1,0 @@
-make
-pt -b *.ko
