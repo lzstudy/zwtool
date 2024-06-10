@@ -47,44 +47,7 @@ function list_sample()
 	done < $FILE_SP
 }
 
-########################################################################################################
-# 替换关键信息, 会替换xxx 和 XXX，文件夹名, 文件夹名
-########################################################################################################
-function replace_key()
-{
-	FILE=$1
-	KEY=$2
 
-	if [ -z $1 ] || [ -z $2 ];then
-		echo "sp -rp <dir> <key>"
-		exit
-	fi
-
-	# 配置大小写
-	LOWER=$2
-	UPPER=`echo $2 | tr a-z A-Z`
-
-	# 截取后缀
-	sed -i "s/xxx/$LOWER/g" `grep xxx -rl $FILE` 2> /dev/null
-	sed -i "s/XXX/$UPPER/g" `grep XXX -rl $FILE` 2> /dev/null
-
-	# 文件替换
-	if [[ ! -d $FILE ]];then
-		NEW_NAME=$(echo ${FILE/xxx/$LOWER})
-		mv $FILE $NEW_NAME
-	else
-		RESULT=$(find $FILE -name "xxx*")
-		arr=($RESULT)
-
-		for ITEM in ${arr[@]}
-		do
-			NEW_NAME=$(echo ${ITEM/xxx/$LOWER})
-			mv $ITEM $NEW_NAME
-		done
-
-		mv $FILE $KEY
-	fi
-}
 
 ########################################################################################################
 # 模板入口
@@ -94,6 +57,12 @@ function zwsample_entry()
 	# 如果参数个数小于2, 打印提示
 	if [ $# = 0 ];then
     	print_usage $@
+		exit 1
+	fi
+
+	if [ $# = 1 ]; then
+		echo $CORE_PATH
+		grep --color=auto $1 $CORE_PATH -nr
 		exit 1
 	fi
 
@@ -117,10 +86,6 @@ function zwsample_entry()
 
 		-ls)
 		list_sample $@
-		;;
-
-		-rp)
-		replace_key $2 $3
 		;;
 
 		*)
