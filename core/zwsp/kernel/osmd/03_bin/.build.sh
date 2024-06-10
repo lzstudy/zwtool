@@ -1,0 +1,2 @@
+make
+pt -b *.bin

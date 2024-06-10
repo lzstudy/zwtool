@@ -64,10 +64,6 @@
         "mm_comm_vi.h": "c",
         "input.h": "c",
         "motor.h": "c",
-        "motor_def.h": "c",
-        "ckerr.h": "c",
-        "unistd.h": "c",
-        "stdio.h": "c",
-        "string.h": "c"
+        "motor_def.h": "c"
     }
 }

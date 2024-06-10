@@ -1,3 +1,0 @@
-/home/zw/work/osmd/02_app/_build/CMakeFiles/rebuild_cache.dir
-/home/zw/work/osmd/02_app/_build/CMakeFiles/edit_cache.dir
-/home/zw/work/osmd/02_app/_build/CMakeFiles/main.dir
