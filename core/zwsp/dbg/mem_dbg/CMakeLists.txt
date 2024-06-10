@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置目标名称
-set(target main)
+set(target xxmem)
  
 #指定工程名称
 project(${target})
@@ -31,7 +31,7 @@ aux_source_directory(${PROJECT_SOURCE_DIR} srcs)
 # aux_source_directory(${PROJECT_SOURCE_DIR}/../../lib srcs)
 
 # 生成可执行文件
-add_executable(main ${srcs})
+add_executable(xxmem ${srcs})
 
 # 设置链接库
 target_link_libraries(${target} ${libs})
