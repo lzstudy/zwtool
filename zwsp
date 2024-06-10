@@ -47,6 +47,19 @@ function list_sample()
 	done < $FILE_SP
 }
 
+########################################################################################################
+# 模板入口
+########################################################################################################
+function get_sample()
+{
+	if [ $# = 1 ]; then
+		echo $CORE_PATH
+		grep --color=auto $1 $CORE_PATH -nr
+		exit 1
+	fi
+
+	cp -rf ${CORE_PATH}/$1/$2 .
+}
 
 
 ########################################################################################################
@@ -57,12 +70,6 @@ function zwsample_entry()
 	# 如果参数个数小于2, 打印提示
 	if [ $# = 0 ];then
     	print_usage $@
-		exit 1
-	fi
-
-	if [ $# = 1 ]; then
-		echo $CORE_PATH
-		grep --color=auto $1 $CORE_PATH -nr
 		exit 1
 	fi
 
@@ -89,7 +96,7 @@ function zwsample_entry()
 		;;
 
 		*)
-		cp -rf ${CORE_PATH}/$1/$2 .
+		get_sample $@
 		;;
 	esac
 }
