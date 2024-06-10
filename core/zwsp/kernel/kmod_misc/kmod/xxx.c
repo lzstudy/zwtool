@@ -9,6 +9,7 @@
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
 #include <linux/interrupt.h>
+#include <linux/backing-dev.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include "ckerr.h"
@@ -38,27 +39,68 @@ static int xxx_open(struct inode *inode, struct file *filp)
 }
 
 /**************************************************************************************************
+ * @brief  : xxx lseek
+ * @param  : inode
+ * @param  : 文件信息
+**************************************************************************************************/
+static loff_t xxx_lseek(struct file *file, loff_t offset, int orig)
+{
+	loff_t ret;
+
+	inode_lock(file_inode(file));
+	switch (orig) {
+	case SEEK_CUR:
+		offset += file->f_pos;
+		/* fall through */
+	case SEEK_SET:
+		/* to avoid userland mistaking f_pos=-9 as -EBADF=-9 */
+		if ((unsigned long long)offset >= -MAX_ERRNO) {
+			ret = -EOVERFLOW;
+			break;
+		}
+		file->f_pos = offset;
+		ret = file->f_pos;
+		force_successful_syscall_return();
+		break;
+	default:
+		ret = -EINVAL;
+	}
+	inode_unlock(file_inode(file));
+	return ret;
+}
+
+/**************************************************************************************************
  * @brief  : mmap
  * @param  : inode
  * @param  : 文件信息
 **************************************************************************************************/
 static int xxx_mmap(struct file *file, struct vm_area_struct *vma)
 {
-	int ret;
-	uint32_t size;
+	size_t size = vma->vm_end - vma->vm_start;
+	phys_addr_t offset = (phys_addr_t)vma->vm_pgoff << PAGE_SHIFT;
 
-	size = vma->vm_start - vma->vm_end;
+	/* Does it even fit in phys_addr_t? */
+	if (offset >> PAGE_SHIFT != vma->vm_pgoff)
+		return -EINVAL;
 
-	/* 修改权限为不缓存 */
+	/* It's illegal to wrap around the end of the physical address space. */
+	if (offset + (phys_addr_t)size - 1 < offset)
+		return -EINVAL;
+
 	vma->vm_page_prot = phys_mem_access_prot(file, vma->vm_pgoff,
 						 size,
 						 vma->vm_page_prot);
 
-	LOG_I("vmstart = %lx, vmend = %lx, phy = %lx", vma->vm_start, vma->vm_end, vma->vm_pgoff);
+	// vma->vm_ops = &mmap_mem_ops;
 
-	/* 重新映射 */
-	ret = remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, size, vma->vm_page_prot);
-	CI_RET_U(ret, remap_pfn_range);
+	/* Remap-pfn-range will mark the range VM_IO */
+	if (remap_pfn_range(vma,
+			    vma->vm_start,
+			    vma->vm_pgoff,
+			    size,
+			    vma->vm_page_prot)) {
+		return -EAGAIN;
+	}
 	return 0;
 }
 
@@ -97,6 +139,7 @@ static long xxx_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 static const struct file_operations xxx_fops = {
 	.owner	 = THIS_MODULE,
+	.llseek	 = xxx_lseek,
 	.open	 = xxx_open,
 	.mmap    = xxx_mmap,
 	.release = xxx_release,

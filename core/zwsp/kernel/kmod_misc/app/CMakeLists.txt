@@ -8,8 +8,8 @@ set(target main)
 project(${target})
 
 # 设置编译选项
-#set(CMAKE_C_COMPILER "arm-linux-gnueabi-gcc")
-set(CMAKE_C_COMPILER ${CC})
+set(CMAKE_C_COMPILER "aarch64-target-linux-gnu-gcc")
+# set(CMAKE_C_COMPILER ${CC})
 set(CMAKE_AR ${AR})
 
 # 设置编译选项
