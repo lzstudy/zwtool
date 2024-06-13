@@ -8,3 +8,8 @@ ${sdk}/dtb/dts/hi1910b/hi1910BL/hi1910B-asic-M150-B51.dts                  -    
 dd if=Image of=/dev/mmcblk1 count=61440 seek=32768 bs=512                  -       更新内核
 dd if=dt.img of=/dev/mmcblk1 count=4096 seek=114688 bs=512                 -       更新设备树主分区
 dd if=dt.img of=/dev/mmcblk1 count=4096 seek=376832 bs=512                 -       更新设备树次分区
+
+
+#################### {cmd} 专用命令
+npu-smi info
+/var/davinci/driver/upgrade-tool --device_index 0 --component -1 --version
