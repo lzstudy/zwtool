@@ -57,19 +57,19 @@ function do_prompt()
 	case $# in
 		1)
 		if [ -f $FILE ]; then
-			cat $FILE						# 查看全部信息
+			cat $FILE						
 		else
 			cd $CORE_PATH
-			grep {$1 -nr
+			grep --color=auto $1 * -nr
 		fi
 		;;
 
 		2)				
-		cat $FILE | grep $KEY -A 5	# 查看和key相关得信息
+		cat $FILE | grep --color=auto $KEY -A 5	# 查看和key相关得信息
 		;;
 
 		3)
-		cat $FILE | grep $KEY -A $3	# 查看和key相关得信息
+		cat $FILE | grep --color=auto $KEY -A $3	# 查看和key相关得信息
 		;;
 	esac
 }

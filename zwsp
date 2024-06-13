@@ -53,8 +53,8 @@ function list_sample()
 function get_sample()
 {
 	if [ $# = 1 ]; then
-		echo $CORE_PATH
-		grep --color=auto $1 $CORE_PATH -nr
+		cd $CORE_PATH
+		grep --color=auto $1 * -nr
 		exit 1
 	fi
 
