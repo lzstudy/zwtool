@@ -115,7 +115,7 @@ function zwpp_entry()
 
 		-grep)
 		cd $CORE_PATH
-		grep $2 -nr
+		grep --color=auto $2 * -nr
 		;;
 
 		-edit)

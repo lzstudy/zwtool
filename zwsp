@@ -87,6 +87,11 @@ function zwsample_entry()
 		vi $THIS_FILE
 		;;
 
+		-grep)
+		cd $CORE_PATH
+		grep --color=auto $2 * -nr
+		;;
+
 		-cd)
 		cd $CORE_PATH
 		;;
