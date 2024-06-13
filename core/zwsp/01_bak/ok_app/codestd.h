@@ -8,46 +8,46 @@
 #define FILE_NAME(x)            (strrchr(x, '/') ? strrchr(x, '/') + 1 : x)
 
 /* 固定格式 - return */
-#define CI_RET(func, cond, ret)                                                                                          \
+#define CI_RET(cond, ret, func)                                                                                          \
     if(cond) {                                                                                                           \
         PRINT("[%s:%s:%u - %s] [fail:%s] [ret:%d] \n", FILE_NAME(__FILE__), __FUNCTION__, __LINE__, #func, #cond, ret);  \
         return ret;                                                                                                      \
     }
 
-#define _CI_RET(func, cond)                                                                               \
+#define _CI_RET(cond, func)                                                                               \
     if(cond) {                                                                                            \
         PRINT("[%s:%s:%u - %s] [fail:%s]\n", FILE_NAME(__FILE__), __FUNCTION__, __LINE__, #func, #cond);  \
         return;                                                                                           \
     }
 
-#define CI_GOTO(func, cond, label)                                                                        \
+#define CI_GOTO(cond, func, label)                                                                        \
     if(cond) {                                                                                            \
         PRINT("[%s:%s:%u - %s] [fail:%s]\n", FILE_NAME(__FILE__), __FUNCTION__, __LINE__, #func, #cond);  \
         goto label;                                                                                       \
     }
 
 /* 标准打印 */
-#define LOG_I(fmt, ...)                 PRINT(fmt"\n", ##__VA_ARGS__);
+#define LOG_I(fmt, ...)          PRINT(fmt"\n", ##__VA_ARGS__);
 
 /* 检测 - 带返回值 */
 #define CK_RET(cond, ret)               do {if(ret) {return val;}} while(0)
 #define CK_RET_P(ret)                   CK_RET(!ret, -1);
-#define CI_RET_P(func, ret)             CI_RET(func, !ret, -1);
+#define CI_RET_P(ret, func)             CI_RET(!ret, -1, func);
 #define CK_RET_U(ret)                   CK_RET(ret < 0, ret);  
-#define CI_RET_U(func, ret)             CI_RET(func, ret < 0, ret);
+#define CI_RET_U(ret, func)             CI_RET(ret < 0, ret, func);
 
 /* 检测 - 无返回值 */
 #define _CK_RET(cond)                   do {if(cond) {return;}} while(0)
 #define _CK_RET_P(ret)                  _CK_RET(!ret);
-#define _CI_RET_P(func, ret)            _CI_RET(func, !ret);
+#define _CI_RET_P(ret, func)            _CI_RET(!ret, func);
 #define _CK_RET_U(ret)                  _CK_RET(ret < 0);  
-#define _CI_RET_U(func, ret)            _CI_RET(func, ret < 0);
+#define _CI_RET_U(ret, func)            _CI_RET(ret < 0, func);
 
 /* 检测 - GOTO */
-#define CK_GOTO(cond, lable)            do {if(cond) {goto label;}} while(0)
-#define CI_GOTO_P(func, ret, label)     CI_GOTO(func, !ret, lable);
+#define CK_GOTO(cond, lable)            do {if(cond) {goto lable;}} while(0)
+#define CI_GOTO_P(ret, label, fmt)      CI_GOTO(!ret, func, lable);
 #define CK_GOTO_P(ret, label)           CK_GOTO(!ret, lable);
-#define CI_GOTO_U(func, ret, label)     CI_GOTO(ret < 0, func, lable);
+#define CI_GOTO_U(ret, label, fmt)      CI_GOTO(ret < 0, func, lable);
 #define CK_GOTO_U(ret, label)           CK_GOTO(ret < 0, lable);
 
 /* 检测 - 参数 */

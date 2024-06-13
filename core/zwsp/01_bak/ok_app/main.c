@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
 {
     int a = 5;
     LOG_I("hello world");
-    CI_RET_U(work, -1);
+    CI_RET_U(-1, work);
     return 0;
 }
 
