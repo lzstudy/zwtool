@@ -6,8 +6,8 @@
         {
             "label"         : "build_app",
             "type"          : "shell",
-            "options"       : { "cwd": "${workspaceFolder}/01_app"},
-            "command"       : "./.build.sh",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "./.build.sh app",
             "args"          : [],
             "group"         : {"kind": "build", "isDefault": true},
             "problemMatcher": "$msCompile",
@@ -16,8 +16,8 @@
         {
             "label"         : "build_kmod",
             "type"          : "shell",
-            "options"       : { "cwd": "${workspaceFolder}/02_kmod"},
-            "command"       : "./.build.sh",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "./.build.sh kmod",
             "args"          : [],
             "group"         : {"kind": "build", "isDefault": true},
             "problemMatcher": "$msCompile",
@@ -26,8 +26,18 @@
         {
             "label"         : "build_bin",
             "type"          : "shell",
-            "options"       : { "cwd": "${workspaceFolder}/03_bin"},
-            "command"       : "./.build.sh",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "./.build.sh bin",
+            "args"          : [],
+            "group"         : {"kind": "build", "isDefault": true},
+            "problemMatcher": "$msCompile",
+        },
+
+        {
+            "label"         : "build_clean",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "./.build.sh clean",
             "args"          : [],
             "group"         : {"kind": "build", "isDefault": true},
             "problemMatcher": "$msCompile",

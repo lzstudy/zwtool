@@ -12,7 +12,7 @@
 #include <linux/backing-dev.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
-#include "ckerr.h"
+#include "ckret.h"
 
 typedef struct _osmd_priv {
 	struct miscdevice misc;														/**@ misc设备. */
@@ -249,7 +249,7 @@ static int __init osmd_init(void)
 	
 	/* 注册MISC设备 */
 	ret = misc_register(&priv->misc);
-	CI_RET_U(ret, misc_register);
+	CI_RET(misc_register, ret < 0, ret);
 
 	LOG_I("osmd init");
 	return 0;

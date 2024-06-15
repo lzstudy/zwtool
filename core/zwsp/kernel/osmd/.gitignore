@@ -1,0 +1,5 @@
+01_app/_build
+*.ko
+*.bin
+*.dis
+*.elf
