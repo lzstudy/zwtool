@@ -6,13 +6,23 @@
 #include <linux/of_device.h>
 #include <linux/of_gpio.h>
 #include <linux/of_irq.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
 #include <linux/interrupt.h>
 #include <linux/backing-dev.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
+#include <linux/poll.h>
+#include <linux/acpi.h>
+#include <linux/cpumask.h>
+#include <linux/arm-smccc.h>
 #include "ckret.h"
+
+
+
+#define PHY_ADDR				0x50000000
 
 typedef struct _osmd_priv {
 	struct miscdevice misc;														/**@ misc设备. */
@@ -151,71 +161,59 @@ static const struct file_operations osmd_fops = {
  * @param  : None
  * @return : 0成功, -1失败
 **************************************************************************************************/
-static ssize_t osmd_dbg1_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+static ssize_t osmd_func(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
+	int val;
+	osmd_priv *priv = to_osmd_priv(dev->driver_data);
+	struct arm_smccc_res res;
+
+    if(kstrtoint(buf, 0, &val))
+        return -EINVAL;
+
+	switch(val)
+	{
+	case 1:
+		arm_smccc_smc(0xC4000003, 0x300, PHY_ADDR, 0, 0, 0, 0, 0, &res);
+		LOG_I("smcc ret = %d",  res.a0);
+		break;
+
+	case 2:
+		arm_smccc_smc(0xC4000003, 300, PHY_ADDR, 0, 0, 0, 0, 0, &res);
+		break;
+
+	}
+	
+	return count;
+}
+
+/**************************************************************************************************
+ * @brief  : 属性 - w - dgb1
+ * @param  : None
+ * @return : 0成功, -1失败
+**************************************************************************************************/
+static ssize_t osmd_get_cpuid(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+{
+	u32 mpidr;
 	int val;
 	osmd_priv *priv = to_osmd_priv(dev->driver_data);
 
     if(kstrtoint(buf, 0, &val))
         return -EINVAL;
-	
-	LOG_I("priv addr = %p, val = %d", priv, val);
+
+
+
 	return count;
 }
 
-/**************************************************************************************************
- * @brief  : 属性 - r - dgb2
- * @param  : None
- * @return : 0成功, -1失败
-**************************************************************************************************/
-static ssize_t osmd_dbg2_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	int val = 0;
-	osmd_priv *priv = to_osmd_priv(dev->driver_data);
 
-	LOG_I("priv addr = %p, val = %d", priv, val);
-	return sprintf(buf, "%d\n", val);
-}
 
-/**************************************************************************************************
- * @brief  : 属性 - r - dgb3
- * @param  : None
- * @return : 0成功, -1失败
-**************************************************************************************************/
-static ssize_t osmd_dbg3_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
-	int val = 0;
-	osmd_priv *priv = to_osmd_priv(dev->driver_data);
+static DEVICE_ATTR(func, 0220, NULL, osmd_func);
+static DEVICE_ATTR(cpuid, 0220, NULL, osmd_get_cpuid);
 
-	LOG_I("priv addr = %p, val = %d", priv, val);
-	return sprintf(buf, "%d\n", val);
-}
-
-/**************************************************************************************************
- * @brief  : 属性 - w - dgb3
- * @param  : None
- * @return : 0成功, -1失败
-**************************************************************************************************/
-static ssize_t osmd_dbg3_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
-{
-	int val;
-	osmd_priv *priv = to_osmd_priv(dev->driver_data);
-
-    if(kstrtoint(buf, 0, &val))
-        return -EINVAL;
-	
-	LOG_I("priv addr = %p, val = %d", priv, val);
-	return count;
-}
-
-static DEVICE_ATTR(dbg1, 0220, NULL, osmd_dbg1_store);
-static DEVICE_ATTR(dbg2, 0440, osmd_dbg2_show, NULL);
-static DEVICE_ATTR(dbg3, 0640, osmd_dbg3_show, osmd_dbg3_store);
 
 static struct attribute *osmd_attr[] = {
-	&dev_attr_dbg1.attr,
-	&dev_attr_dbg2.attr,
-	&dev_attr_dbg3.attr,
+	&dev_attr_func.attr,
+	&dev_attr_cpuid.attr,
 	NULL
 };
 

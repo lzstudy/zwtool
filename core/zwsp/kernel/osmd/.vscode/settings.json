@@ -68,6 +68,7 @@
         "ckerr.h": "c",
         "unistd.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "ckret.h": "c"
     }
 }
