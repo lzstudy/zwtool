@@ -256,7 +256,7 @@ function zwvi_entry()
         ;;
 
         -sw)
-        zw_switch $2
+        zwvi_switch $2
         ;;
 
         [1-9])
