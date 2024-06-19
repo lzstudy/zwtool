@@ -267,11 +267,11 @@ function zwvi_entry()
         run_vi $1
         ;;
 
-        +)
+        *)
         add_file $@
         ;;
 
-        *)
+        +)
         vague_file $@
         ;;
     esac
