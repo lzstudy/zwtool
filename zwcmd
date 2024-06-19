@@ -127,8 +127,24 @@ function op_other()
         ;;
 
         3)
-        TARGET=$(sed -n ''$1' p' $WORK_FILE)
+        TARGET=$(sed -n ''$3' p' $WORK_FILE)
         $TARGET
+        ;;
+    esac
+}
+
+########################################################################################################
+# 添加路径
+########################################################################################################
+function zwcmd_edit()
+{
+    case $# in
+        1)
+        vi $WORK_FILE
+        ;;
+
+        2)
+        vi $WORK_PATH/$2
         ;;
     esac
 }
@@ -166,7 +182,7 @@ function zwcmd_entry()
         ;;
 
         -e)
-        vi $WORK_FILE
+        zwcmd_edit $@
         ;;
 
         -edit)
