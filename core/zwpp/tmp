@@ -1,1 +1,5 @@
 CONFIG_STRICT_DEVMEM  - c检查
+
+vi shift + i shift + e
+ctrl + a ctrl + e
+
