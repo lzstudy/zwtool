@@ -49,6 +49,8 @@ function get_file()
 		;;
 	esac
 
+	echo $SCP_FILE
+
 	scp -r $SCP_FILE .
 }
 

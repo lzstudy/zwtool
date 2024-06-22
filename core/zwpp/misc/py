@@ -5,3 +5,6 @@ print(var)					# 直接打印变量
 
 # {env} 
 sudo update-alternatives --config python                 # 切换python版本
+
+# {pip3}
+sudo pip3 install pyelftools==0.27						 # 安装版本
