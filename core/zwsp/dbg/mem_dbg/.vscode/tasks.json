@@ -37,7 +37,7 @@
             "label"         : "push",
             "type"          : "shell",
             "options"       : { "cwd": "${workspaceFolder}/_build"},
-            "command"       : "pt -b main",
+            "command"       : "pt -b xxmem",
             "args"          : [],
             "isBackground"  : false,
             "group"         : {"kind": "build", "isDefault": true},

@@ -1,10 +1,10 @@
 ################################################# {kern} {kernel} 内核
 #################### {base}
-#define pr_fmt(fmt) "mcs: " fmt                            # 配合pr_info
+#define pr_fmt(fmt) "mcs: " fmt  	# 配合pr_info
 
 #################### {asm}
 # {reg} {cpu reg}
-MSP                                 # 堆栈寄存器
+MSP									# 堆栈寄存器
 VBAR_EL1							# 中断向量表地址寄存器
 VBAR								# 中断向量表重映射地址
 
@@ -13,9 +13,9 @@ MSR x0, CPSR                       	# 特殊CPSR => 通用x0
 MRS CPSR, x0                       	# 通用x0 => 特殊CPSR
 
 # {aarch64}
-VBAR_EL1						   	# 中断向量表level1的地址
+VBAR_EL1						  	# 中断向量表level1的地址
 CurrentEL						   	# 当前EL等级(EL2还是EL1)
-MSP                                	# 主堆栈指针
+MSP                              	# 主堆栈指针
 VTOR                               	# 中断向量表偏移寄存器
 
 CPSID    I                         	# 关中断 (local_irq_disable, 只是对处理器操作, 没有对GIC操作)
