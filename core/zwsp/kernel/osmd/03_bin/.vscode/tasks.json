@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "project": "module",
+
+    "tasks": [
+        {
+            "label"         : "build_bin",
+            "type"          : "shell",
+            "options"       : { "cwd": "${workspaceFolder}"},
+            "command"       : "./.build.sh bin",
+            "args"          : [],
+            "group"         : {"kind": "build", "isDefault": true},
+            "problemMatcher": "$msCompile",
+        },
+
+    ]
+}

@@ -22,7 +22,7 @@
 
 
 
-#define PHY_ADDR				0x50000000
+#define PHY_ADDR				0x60000000
 
 typedef struct _osmd_priv {
 	struct miscdevice misc;														/**@ misc设备. */
@@ -164,21 +164,23 @@ static const struct file_operations osmd_fops = {
 static ssize_t osmd_func(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	int val;
-	osmd_priv *priv = to_osmd_priv(dev->driver_data);
+	// osmd_priv *priv = to_osmd_priv(dev->driver_data);
 	struct arm_smccc_res res;
 
-    if(kstrtoint(buf, 0, &val))
+    if(kstrtoint(buf, 0, &val)) {
         return -EINVAL;
+	}
 
 	switch(val)
 	{
 	case 1:
 		arm_smccc_smc(0xC4000003, 0x300, PHY_ADDR, 0, 0, 0, 0, 0, &res);
-		LOG_I("smcc ret = %d",  res.a0);
+		LOG_I("start cpu addr = 0x%lx smcc ret = %d",  PHY_ADDR, res.a0);
 		break;
 
 	case 2:
-		arm_smccc_smc(0xC4000003, 300, PHY_ADDR, 0, 0, 0, 0, 0, &res);
+		arm_smccc_smc(0x84000002, 0x300, PHY_ADDR, 0, 0, 0, 0, 0, &res);
+		LOG_I("smcc ret = %d",  res.a0);
 		break;
 
 	}
@@ -193,13 +195,13 @@ static ssize_t osmd_func(struct device *dev, struct device_attribute *attr, cons
 **************************************************************************************************/
 static ssize_t osmd_get_cpuid(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-	u32 mpidr;
+	// u32 mpidr;
 	int val;
-	osmd_priv *priv = to_osmd_priv(dev->driver_data);
+	// osmd_priv *priv = to_osmd_priv(dev->driver_data);
 
-    if(kstrtoint(buf, 0, &val))
+    if(kstrtoint(buf, 0, &val)) {
         return -EINVAL;
-
+	}
 
 
 	return count;

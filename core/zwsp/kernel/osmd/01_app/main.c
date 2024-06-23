@@ -29,7 +29,7 @@ static int load_bin(void *virt, const char *file)
     file_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    LOG_I("file [%s] size = %ld", file, file_size);
+    LOG_I("file [%s] size = %ld(%ldK)", file, file_size, file_size / 1024);
 
     /* 读取文件 */
     fread(virt, sizeof(uint8_t), file_size, fp);
