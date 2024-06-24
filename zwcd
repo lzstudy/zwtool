@@ -196,12 +196,12 @@ function op_other_add()
 
         [1-9])
         TARGET=$(sed -n ''$1' p' $2)
-        $TARGET
+        cd $TARGET
         ;;
 
         [1-9][0-9]*)
         TARGET=$(sed -n ''$1' p' $2)
-        $TARGET
+        cd $TARGET
         ;;
 
         *)
