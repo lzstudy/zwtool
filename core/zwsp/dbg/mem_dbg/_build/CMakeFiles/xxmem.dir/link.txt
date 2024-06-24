@@ -1,1 +1,0 @@
-aarch64-target-linux-gnu-gcc    CMakeFiles/xxmem.dir/codestd.c.o CMakeFiles/xxmem.dir/xxmem.c.o  -o xxmem  -lpthread 
