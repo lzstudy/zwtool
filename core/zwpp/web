@@ -1,4 +1,5 @@
 # {optee}
 https://optee.readthedocs.io/en/latest/                      # optee官网
 
-#
+# {buildroot}
+http://sources.buildroot.net/devmem2.c                       # 开源工具

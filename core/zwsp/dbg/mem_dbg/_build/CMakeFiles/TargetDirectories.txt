@@ -1,0 +1,3 @@
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/_build/CMakeFiles/rebuild_cache.dir
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/_build/CMakeFiles/edit_cache.dir
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/_build/CMakeFiles/xxmem.dir

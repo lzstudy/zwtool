@@ -215,7 +215,7 @@ static int xxmem_mmap(xxmem_cxt *cxt)
     mmap_info *map = &cxt->mmap;
 
     /* 打开文件 */
-    map->fd = open("/dev/mem", O_RDWR | O_SYNC);
+    map->fd = open("/dev/osmd", O_RDWR | O_SYNC);
     CI_RET_U(map->fd, open);
 
     /* 设置偏移 */

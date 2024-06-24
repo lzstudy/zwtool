@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/codestd.c
+stdint.h
+-
+unistd.h
+-
+stdio.h
+-
+codestd.h
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/codestd.h
+
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/codestd.h
+stdio.h
+-
+stdint.h
+-
+
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/xxmem.c
+stdio.h
+-
+unistd.h
+-
+fcntl.h
+-
+stdlib.h
+-
+string.h
+-
+sys/mman.h
+-
+sys/types.h
+-
+codestd.h
+/home/zw/.zwbin/zwtools/core/zwsp/dbg/mem_dbg/codestd.h
+
