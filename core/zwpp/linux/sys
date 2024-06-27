@@ -46,6 +46,10 @@ ip route get 120.48.82.24                               # 查看某个路由
 ip route add default via 192.168.31.1                   # 设置默认路由
 ip rulue                                                # 查看全部路由表(默认main表)
 
+# {passwd} {pwd}
+/etc/passwd                                             # 密码设置文件, 去掉x可以不用密码
+/etc/shadow                                             # 密码密钥文件
+
 #################### {misc}
 usermod -p "" root                  -                   # 清空密码
 

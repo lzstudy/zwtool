@@ -2,7 +2,7 @@
 # {file}
 /kernel/arch/arm64/boot/dts/rockchip/rk3568-atk-evb1-ddr4-v10.dtsi      # 板子设备树
 /kernel/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-
+rk3568-atk-evb1-ddr4-v10-linux.dts                                      # 板子设备树
 
 #{rtt}
 libcpu/aarch64/cortex-a                                                 # 入口
