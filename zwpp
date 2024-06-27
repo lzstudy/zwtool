@@ -43,9 +43,26 @@ function zwpp_edit()
 }
 
 ########################################################################################################
-# 提示文件
+# 文件提示 或 搜索
 ########################################################################################################
 function prompt_file()
+{
+	cd ${CORE_PATH}
+	RES=$(find -name $1)
+	FILE=$CORE_PATH/$RES
+
+	if [ -f $FILE ]; then
+		cat $FILE						
+	else
+		cd $CORE_PATH
+		grep --color=auto $1 * -nr
+	fi
+}
+
+########################################################################################################
+# 提示文件 + 上下文
+########################################################################################################
+function prompt_file_context()
 {
 	cd ${CORE_PATH}
 	RES=$(find -name $1)
@@ -62,21 +79,13 @@ function prompt_file()
 ########################################################################################################
 function do_prompt()
 {
-	FILE=$CORE_PATH/$1
-	KEY={$2
-
 	case $# in
 		1)
-		if [ -f $FILE ]; then
-			cat $FILE						
-		else
-			cd $CORE_PATH
-			grep --color=auto $1 * -nr
-		fi
+		prompt_file $@
 		;;
 
 		*)			
-		prompt_file $@
+		prompt_file_context $@
 		;;
 	esac
 }

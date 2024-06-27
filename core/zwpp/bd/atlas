@@ -8,19 +8,26 @@ https://support.huawei.com/enterprise/zh/doc/EDOC1100367985/               # 24.
 ${sdk}/dtb/dts/hi1910b/hi1910BL/hi1910B-asic-M150-B51.dts                  # 设备树
 
 #################### {env} 环境搭建
-dd if=Image of=/dev/mmcblk1 count=61440 seek=32768 bs=512                  # 更新内核
-dd if=dt.img of=/dev/mmcblk1 count=4096 seek=114688 bs=512                 # 更新设备树主分区
-dd if=dt.img of=/dev/mmcblk1 count=4096 seek=376832 bs=512                 # 更新设备树次分区
+
 
 #################### {update} 升级
 Ascend-hdk-310b-npu-driversoc_<version>_linux-aarch64.run                  # 升级驱动包
 
 
 
-#################### {cmd} 专用命令
+################################################# {cmd} 专用命令
 # 烧写分区命令
-dd if=Image of=/dev/mmcblk1 count=61440 seek=32768 bs=512
-dd if=dt.img of=/dev/mmcblk1 count=4096 seek=114688 bs=512
+{sd卡}
+dd if=Image of=/dev/mmcblk1 count=61440 seek=32768 bs=512                  # 更新内核
+dd if=dt.img of=/dev/mmcblk1 count=4096 seek=114688 bs=512                 # 更新设备树主分区
+dd if=dt.img of=/dev/mmcblk1 count=4096 seek=376832 bs=512                 # 更新设备树次分区
+
+{emmc}
+dd if=Image of=/dev/mmcblk0 count=61440 seek=32768 bs=512                  # 更新内核
+dd if=dt.img of=/dev/mmcblk0 count=4096 seek=114688 bs=512                 # 更新设备树主分区
+
+{tools}
+sudo python3 make_sd_card.py local /dev/sda                                # 制卡
 
 # 版本VERSION命令
 npu-smi info
