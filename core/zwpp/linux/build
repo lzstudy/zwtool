@@ -1,41 +1,4 @@
 ################################################# {build} 编译
-#################### {yocto}
-# {base}
-PV                                        # 版本号
-config/bitbake.conf  		              # yocto底层配置文件, 配置主要变量(公共变量)
-class/base.bbclass   		              # 通用任务配置文件
-meta-xxx-layer       		              # 元数据的集合
-conf/bblayers.conf   		              # 定位工程所用到的层
-bblayer.conf/local.conf                   # 用户配置文件
-recipe                                    # 元数据的最常见形式, bb  .bbappend  inc   .bbclass
-
-# {flow}
-oebuild init <work_dir>                   # 初始化工作环境
-oebuild update                            # 设置容器，拉取基础层
-oebuild generate -p ok3588 -d ok3588      # 生成比那一配置文件
-oebuild bitbake openeuler-image           # 编译镜像
-
-# {oebuild}
-oebulid init -b openEuler-23.09           # 选择q初始化分支(失败)
-oebuild generate -l                       # 列出支持的单板
-oebuild generate -p <platform> -d <dir>   # 设置要构建的单板
-
-# {bitbake} {bb}
-bitbake -b xxx.bb                         # 构建
-bitbake <recipe> -c cleansstate           # 清理所有的构建产物，包括源码和下载的包
-bitbake <recipe> -c clean                 # 清理配方的构建缓存，而不是所有配方的缓存
-bitbake -s | grep ^[^:]     	          # 查看所有配方的task
-bitbake -s <recipe> | grep ^T 	          # 查看指定配方的task
-bitbake xxx -c configure    	          # 重新构建配置
-bitbake -e zlib > mybb.log     	          # 查看执行环境中使用的配置文件和类文件
-bitbake xxx -c listtasks                  # 列出此配方支持的所有人物
-bitbake xxx -c <task>                     # 执行该任务
-
-# {openeuler}
-$SDK/src/yocto-meta-openeuler/meta-openeuler/recipes-core/packagegroups/packagegroup-base.bb    # 所有的基础软件
-$SDK/src/yocto-poky/meta/recipes-core/base-files                                                # 换标文件
-$SDK/src/yocto-meta-openeuler/meta-openeuler/conf/distro/openeuler.conf                         # openeuler配置文件
-src/yocto-meta-openeuler/meta-openeuler/recipes-core/packagegroups/base.bb                      # 所有要编译下载的包在这里
 
 
 #################### {buildroot}

@@ -30,6 +30,12 @@ function print_usage()
 function get_file()
 {
 	SCP_FILE=
+
+	if [[ $# == 1 ]]; then
+		SCP_FILE=${HOST_LOCAL}:${PWD}/$1
+		echo "scp -r $SCP_FILE ."
+		exit
+	fi
 	
 	case $1 in
 		-a)

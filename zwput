@@ -30,6 +30,12 @@ function print_usage()
 function put_file()
 {
 	SCP_DIR=
+
+	if [[ $# == 1 ]]; then
+		SCP_DIR=${HOST_LOCAL}:${PWD}/$1
+		echo "scp -r $SCP_DIR ."
+		exit
+	fi
 	
 	case $1 in
 		-a)

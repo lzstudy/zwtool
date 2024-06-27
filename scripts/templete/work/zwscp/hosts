@@ -1,10 +1,13 @@
+# [-l] HOST - LOCAL
+HOST_LOCK=root@120.48.82.24
+
 # [-a] HOST - MY SERVER
-HOST_ZW=root@120.48.82.24/root/share
+HOST_ZW=root@120.48.82.24:/root/share
 
 # [-s] HOST - COMPONY SERVER
-HOST_SERVER=root@192.168.1.21/root/
+HOST_SERVER=root@192.168.1.21:/root/
 
-# [-e] HOST - EMBED
+# [-b] HOST - EMBED
 HOST_EMBED=root@192.168.1.21:/root/
 
 # [-t] HOST - TMP
