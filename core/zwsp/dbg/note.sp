@@ -1,1 +1,1 @@
-kmod_misc/       "misc driver no platform"
+mem_dbg/       "mem dbg tool"

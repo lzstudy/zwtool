@@ -5,7 +5,7 @@ ROOT_PATH=$PATH_ZWTL_ROOT
 
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwkcmd
-LINK_FILE=$PATH_ZWTL_INST/kc
+LINK_FILE=$PATH_ZWTL_INST/x
 
 ########################################################################################################
 # 打印用法
@@ -73,6 +73,10 @@ function zwkcmd_entry()
 
 		grep)
 		zwkcmd_grep $@
+		;;
+
+		gl)
+		git log --oneline
 		;;
 	esac
 }

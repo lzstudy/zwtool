@@ -60,8 +60,7 @@ usermod -p "" root                  -                   # 清空密码
 
 # {用户密码修改}
 vi /etc/pam.d/common-password
-
-# {用户信息修改}
+vi /etc/passwd                                          # 登录时不显示括号, 把root->sh改为bash
 
 
 
