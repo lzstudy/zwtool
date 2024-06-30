@@ -27,6 +27,7 @@ function file_list_init()
     mkdir -p $WORK_PATH
     touch $DEFAULT_FILE 2>/dev/null
     ln -s $DEFAULT_FILE $WORK_FILE 2>/dev/null
+    ln -s $THIS_FILE $LINK_FILE 2> /dev/null
 }
 
 ### 文件添加

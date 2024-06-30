@@ -8,6 +8,7 @@ WORK_FILE=$WORK_PATH/.current
 
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwvi
+LINK_FILE=$PATH_ZWTL_INST/et
 
 source $ROOT_PATH/utuils
 

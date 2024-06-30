@@ -7,6 +7,9 @@ WORK_PATH=$ROOT_PATH/.work
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwtool
 
+# 本地文件
+ENV_FILE=
+
 
 ########################################################################################################
 # 打印使用方法
@@ -21,6 +24,27 @@ function print_usage()
 }
 
 
+########################################################################################################
+# 初始化各个模块
+########################################################################################################
+function zwtool_module_init()
+{
+	# 通用工具
+	$ROOT_PATH/zwcmd  -init			# 初始化命令工具
+	$ROOT_PATH/zwvi   -init			# 初始化编辑工具
+	$ROOT_PATH/zwssh  -init			# 初始化SSH工具
+	$ROOT_PATH/zwget  -init			# 初始化GET工具
+	$ROOT_PATH/zwput  -init			# 初始化PUT工具
+	$ROOT_PATH/zwping -init			# 初始化SSH工具
+	$ROOT_PATH/zwpp   -init			# 初始化PP工具
+	$ROOT_PATH/zwcd   -init			# 初始化跳转工具
+
+	# 专用工具
+	$ROOT_PATH/zwsp  -init			# 初始化SP工具
+	$ROOT_PATH/zwcp  -init			# 初始化SP工具
+	$ROOT_PATH/zwtar -init          # 初始化tar工具
+	$ROOT_PATH/zwweb -init          # 初始化web工具
+}
 
 ########################################################################################################
 # 工具初始化
@@ -29,18 +53,18 @@ function print_zwtool_env()
 {
     echo -e "\033[33mSET ENV(.basrc or /etc/profile): \033[0m"
 	echo "step1: "
-	echo "    source $1/env"
+	echo "    source $ENV_FILE"
 	echo "step2: "
 	echo "    source ~/.bashrc"
 	echo "    zwtool -init"
 }
 
 ########################################################################################################
-# 环境初始化
+# 生成env文件
 ########################################################################################################
-function zwtool_env()
+function zwtool_create_env()
 {
-	# 查看环境
+	# 判断host
 	if [[ $# != 2 ]]; then
 		HOST=host
 	else
@@ -69,9 +93,30 @@ function zwtool_env()
 	echo 'export PATH=$PATH:$PATH_ZWTL_ROOT' >> $ENV_FILE
 	echo 'export PATH=$PATH:$PATH_ZWTL_INST' >> $ENV_FILE
 	echo "alias kd='source zwcd'" >> $ENV_FILE
+}
 
-	# 打印环境信息
-	print_zwtool_env $HOST_PATH
+########################################################################################################
+# 生成env文件
+########################################################################################################
+function zwtool_set_env()
+{
+	FILE_SYS=~/.bashrc
+
+	# 设置系统文件
+	ENV_VAR="source $ENV_FILE"
+	echo $ENV_VAR >> $FILE_SYS
+
+	echo "    source ~/.bashrc"
+	echo "    zwtool -init"
+}
+
+########################################################################################################
+# 环境初始化
+########################################################################################################
+function zwtool_env_init()
+{
+	zwtool_create_env $@
+	print_zwtool_env
 }
 
 ########################################################################################################
@@ -79,21 +124,9 @@ function zwtool_env()
 ########################################################################################################
 function zwtool_init()
 {
-	# 通用工具
-	$ROOT_PATH/zwcmd  -init			# 初始化命令工具
-	$ROOT_PATH/zwvi   -init			# 初始化编辑工具
-	$ROOT_PATH/zwssh  -init			# 初始化SSH工具
-	$ROOT_PATH/zwget  -init			# 初始化GET工具
-	$ROOT_PATH/zwput  -init			# 初始化PUT工具
-	$ROOT_PATH/zwping -init			# 初始化SSH工具
-	$ROOT_PATH/zwpp   -init			# 初始化PP工具
-	$ROOT_PATH/zwcd   -init			# 初始化跳转工具
-
-	# 专用工具
-	$ROOT_PATH/zwsp  -init			# 初始化SP工具
-	$ROOT_PATH/zwcp  -init			# 初始化SP工具
-	$ROOT_PATH/zwtar -init          # 初始化tar工具
-	$ROOT_PATH/zwweb -init          # 初始化web工具
+	# zwtool_create_env         # 配置生成环境文件
+	# zwtool_set_env            # 设置环境
+	zwtool_module_init        # 初始化各个模块
 }
 
 ########################################################################################################
@@ -117,29 +150,13 @@ function zwtool_entry()
 	fi
 
 	case $1 in
-        -edit)
-        vi $THIS_FILE
-        ;;
-
-		-env)
-		zwtool_env $@
-		;;
-
-		-lsenv)
-		ls $WORK_PATH
-		;;
-
-		-clean)
-		zwtool_clean
-		;;
-
-		-init)
-		zwtool_init $@
-		;;
-
-		*)
-		print_usage
-		;;
+        -edit)  vi $THIS_FILE ;;
+		-env)   zwtool_env_init $@ ;;
+		-minit) zwtool_module_init ;;
+		-init)  zwtool_init $@ ;;
+		-lsenv) ls $WORK_PATH ;;
+		-clean) zwtool_clean ;;
+		*)      print_usage ;;
 	esac    
 }
 
