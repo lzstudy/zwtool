@@ -1,15 +1,15 @@
 # 通用路径
-# ROOT_PATH:=$(cd `dirname $0`; pwd)
 ROOT_PATH=$PATH_ZWTL_ROOT
 WORK_PATH=$PATH_ZWTL_HOST/zwvi
 
+# WORK文件
+DEFAULT_FILE=$WORK_PATH/default
+WORK_FILE=$WORK_PATH/.current
+
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwvi
-LINK_FILE=$PATH_ZWTL_INST/et
 
-# COOKIES文件
-DEFAULT_FILE=$WORK_PATH/default
-WORK_FILE=$WORK_PATH/current
+source $ROOT_PATH/utuils
 
 
 ########################################################################################################
@@ -17,25 +17,8 @@ WORK_FILE=$WORK_PATH/current
 ########################################################################################################
 function print_usage()
 {
-	echo "usage : kvi [option] [arg]"
-	echo "-------------------------------------"
-	echo "-h                help"
-    echo "-init             first use thsi"
-    echo ".                 add current pwd"
-    echo "-d num            delete pwd"
-    echo "-c                clear pwd"
-    echo "-sw xxx           switch new file"
-    echo "0-100             entry pwd"
-    echo "+                 add quick pwd"
-    echo "-                 jump to quick pwd"
-}
-
-########################################################################################################
-# 添加命令
-########################################################################################################
-function add_cmd()
-{
-    echo $@ >> $WORK_FILE
+    echo "[Usage]: "
+    printf "%-20s%-50s\n" "	et +"           "add current path"
 }
 
 ########################################################################################################
@@ -43,152 +26,67 @@ function add_cmd()
 ########################################################################################################
 function add_file()
 {
-    ITEM=$PWD/$2
+    ITEM=$PWD/$1
     echo $ITEM >> $WORK_FILE
 }
 
 ########################################################################################################
-# 进入路径
+# 添加上一条命令
 ########################################################################################################
-function run_vi()
+function edit_file()
 {
-    TARGET=$(sed -n ''$1' p' $WORK_FILE)
-    vi $TARGET
+    ITEM=$(sed -n ''$1' p' $WORK_FILE)
+    vim $ITEM
 }
 
 ########################################################################################################
-# 添加路径
+# 公共入口
 ########################################################################################################
-function list_add()
+function common_entry()
 {
-    echo $PWD >> $1
+    case $1 in
+        -d)          file_list_del $WORK_FILE $2 ;;
+        -c)          file_list_clear $WORK_FILE ;;
+        [1-9]*)      edit_file $1 ;;
+        +)           add_file $1 ;;
+        *)           add_file $1 ;;
+    esac
 }
 
 ########################################################################################################
-# 删除某行
+# 操作默认文件
 ########################################################################################################
-function list_sub()
+function op_default_file()
 {
-    sed --follow-symlinks -i ''$2' d' $1
+    if [[ $# == 1 ]]; then
+        file_show $DEFAULT_FILE
+    else
+        WORK_FILE=$DEFAULT_FILE
+        shift 1
+        common_entry $@
+    fi
 }
 
 ########################################################################################################
-# 清空zdlist
+# 操作work file
 ########################################################################################################
-function list_clr()
+function op_other_file()
 {
-    truncate -s 0 $1
-}
-
-########################################################################################################
-# 展示列表
-########################################################################################################
-function list_show()
-{
-    cat -n $1
+    WORK_FILE=$(get_dir_file_item $WORK_PATH $2)
+    shift 2
+    common_entry $@
 }
 
 ########################################################################################################
 # 跳转
 ########################################################################################################
-function op_other()
-{
-    local FILE=$WORK_PATH/$2
-
-    case $# in
-        1)
-        ls $WORK_PATH
-        ;;
-
-        2)
-        cat -n $FILE
-        ;;
-
-        3)
-        TARGET=$(sed -n ''$3' p' $WORK_FILE)
-        vi $TARGET
-        ;;
-    esac
-}
-
-########################################################################################################
-# 添加路径
-########################################################################################################
-function zwvi_edit()
+function op_other_work_file()
 {
     case $# in
-        1)
-        vi $WORK_FILE
-        ;;
-
-        2)
-        vi $WORK_PATH/$2
-        ;;
+        1) dir_file_show $WORK_PATH ;;
+        2) file_show $WORK_PATH $2 ;;
+        *) op_other_file $@ ;;
     esac
-}
-
-########################################################################################################
-# 初始化
-########################################################################################################
-function zwvi_init()
-{
-    mkdir -p $WORK_PATH
-    touch $DEFAULT_FILE
-    ln -s $THIS_FILE $LINK_FILE 2>/dev/null
-    ln -s $DEFAULT_FILE $WORK_FILE 2>/dev/null
-}
-
-########################################################################################################
-# zwcmd切换
-########################################################################################################
-function zwvi_switch()
-{
-    touch $WORK_PATH/$1
-    rm $WORK_FILE 2>/dev/null
-    ln -s $WORK_PATH/$1 $WORK_FILE 2>/dev/null
-}
-
-
-########################################################################################################
-# 进入模糊路径, 优选选择最后匹配, 最后选择第一命中的
-########################################################################################################
-function vague_file()
-{
-    CNT=0
-    TARGET=
-    arr_item=()
-    arr_index=()
-
-	
-
-    # 判断满足条件的选项
-    while read line; do
-        TARGET=`echo ${line##*/}`
-        if [[ $TARGET == *"$1"* ]]; then
-            CNT=$[$CNT+1]
-            arr_item+=($line)
-            arr_index+=($CNT)
-        fi
-    done < $WORK_FILE
-
-
-	case $CNT in
-		0)
-        echo -e "\033[33mNo match please retry! \033[0m"
-		list_show $WORK_FILE
-		;;
-
-		1)
-        vi ${arr_item[0]}
-		;;
-
-		*)
-        echo -e "\033[33mMultiple file match please retry! \033[0m"
-        for (( i=0; i<$CNT; i++ )); do
-        echo ${arr_index[i]} ${arr_item[i]}
-        done
-		;;
-	esac
 }
 
 ########################################################################################################
@@ -197,85 +95,24 @@ function vague_file()
 function zwvi_entry()
 {
 	# 参数判断
-	if [ $# = 0 ];then
-		list_show $WORK_FILE
-        exit 1
+	if [ $# == 0 ];then
+        file_show $WORK_FILE
+    else
+        case $1 in
+            -h)          print_usage ;;
+            -init)       file_list_init ;;
+            -cd)         cd_path $WORK_PATH ;;
+            -rm)         dir_file_del $WORK_PATH $2 ;;
+            -mv)         file_rename $WORK_PATH/$2 $WORK_PATH/$3 ;;
+            -sw)         work_file_switch $WORK_PATH $2 ;;
+			-e)          edit_work_file $@ ;;
+            -edit)       edit_file $THIS_FILE ;;
+            -this)       who_ln_file $WORK_FILE ;;
+            -x)          op_other_work_file $@ ;;
+            -xx)         op_default_file $@ ;;
+            *)           common_entry $@ ;;
+        esac
     fi
-
-    case $1 in
-        -h)
-        print_usage
-        ;;
-
-        -init)
-        zwvi_init
-        ;;
-
-        -l)
-        ls $WORK_PATH
-        ;;
-
-        -ls)
-        ls $WORK_PATH
-        ;;
-
-        -e)
-        vi $WORK_FILE
-        ;;
-
-        -edit)
-        vi $THIS_FILE
-        ;;
-
-        -cd)
-        cd $WORK_PATH
-        ;;
-
-        -d)
-        list_sub $WORK_FILE $2
-        ;;
-
-        -c)
-        list_clr $WORK_FILE
-        ;;
-
-        -x)
-        op_other $@
-        ;;
-
-        -e)
-        zwvi_edit $@
-        ;;
-
-        -rm)
-        rm $WORK_PATH/$2
-        ;;
-
-        -mv)
-        mv $WORK_PATH/$2 $WORK_PATH/$3
-        ;;
-
-        -sw)
-        zwvi_switch $2
-        ;;
-
-        [1-9])
-        run_vi $1
-        ;;
-
-        [1-9][0-9]*)
-        run_vi $1
-        ;;
-
-        *)
-        add_file $@
-        ;;
-
-        +)
-        vague_file $@
-        ;;
-    esac
 }
-
 
 zwvi_entry $@

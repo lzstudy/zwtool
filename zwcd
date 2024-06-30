@@ -20,7 +20,7 @@ function print_usage()
     echo "[Usage]: "
     printf "%-20s%-50s\n" "	kd ."           "add current path"
     printf "%-20s%-50s\n" "	kd <num>"       "jump target path"
-    printf "%-20s%-50s\n" "	kd -x"       "jump target path"
+    printf "%-20s%-50s\n" "	kd -x [prj]"    "other project file"
 }
 
 ########################################################################################################

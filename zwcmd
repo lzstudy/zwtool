@@ -1,15 +1,15 @@
 # 通用路径
-# ROOT_PATH:=$(cd `dirname $0`; pwd)
 ROOT_PATH=$PATH_ZWTL_ROOT
 WORK_PATH=$PATH_ZWTL_HOST/zwcmd
 
-# 专用文件
-THIS_FILE=$ROOT_PATH/zwcmd
-LINK_FILE=$PATH_ZWTL_INST/cmd
-
 # WORK文件
 DEFAULT_FILE=$WORK_PATH/default
-WORK_FILE=$WORK_PATH/current
+WORK_FILE=$WORK_PATH/.current
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwcmd
+
+source $ROOT_PATH/utuils
 
 
 ########################################################################################################
@@ -17,36 +17,11 @@ WORK_FILE=$WORK_PATH/current
 ########################################################################################################
 function print_usage()
 {
-	echo "usage : kd [option] [arg]"
-	echo "-------------------------------------"
-	echo "-h                help"
-    echo "-init             first use thsi"
-    echo ".                 add current pwd"
-    echo "-d num            delete pwd"
-    echo "-c                clear pwd"
-    echo "-sw xxx           switch new file"
-    echo "0-100             entry pwd"
-    echo "+                 add quick pwd"
-    echo "-                 jump to quick pwd"
+    echo "[Usage]: "
+    printf "%-20s%-50s\n" "	cmd <num>"       "run num cmd"
+    printf "%-20s%-50s\n" "	cmd -x [prj]"    "run other cmd"
 }
 
-########################################################################################################
-# 添加命令
-########################################################################################################
-function add_cmd()
-{
-    echo $@ >> $WORK_FILE
-}
-
-########################################################################################################
-# 添加上一条命令
-########################################################################################################
-function add_last_cmd()
-{
-    ITEM=`history | tail -2 | head -1`
-    CMD=`echo $ITEM | cut -d ' ' -f 2-`
-    echo $CMD >> $WORK_FILE
-}
 
 ########################################################################################################
 # 进入路径
@@ -57,117 +32,67 @@ function run_cmd()
     $TARGET
 }
 
-########################################################################################################
-# 添加路径
-########################################################################################################
-function list_add()
+#######################################################################################################
+# 添加上一条命令
+#######################################################################################################
+function add_last_cmd()
 {
-    echo $PWD >> $1
+    if [[ $# == 1 ]]; then
+        ITEM=`history | tail -2 | head -1`
+        CMD=`echo $ITEM | cut -d ' ' -f 2-`
+        echo $CMD >> $WORK_FILE
+    else
+        shift
+        echo $@ >> $WORK_FILE
+    fi
 }
 
+#######################################################################################################
+# 公共入口
 ########################################################################################################
-# 删除某行
-########################################################################################################
-function list_sub()
-{
-    sed --follow-symlinks -i ''$2' d' $1
-}
-
-########################################################################################################
-# 清空zdlist
-########################################################################################################
-function list_clr()
-{
-    truncate -s 0 $1
-}
-
-########################################################################################################
-# 展示列表
-########################################################################################################
-function list_show()
-{
-    cat -n $1
-}
-
-########################################################################################################
-# 初始化
-########################################################################################################
-function zwcmd_init()
-{
-    mkdir -p $WORK_PATH
-    touch $DEFAULT_FILE
-    ln -s $THIS_FILE $LINK_FILE 2>/dev/null
-    ln -s $DEFAULT_FILE $WORK_FILE 2>/dev/null
-}
-
-########################################################################################################
-# zwcmd切换
-########################################################################################################
-function zwcmd_switch()
-{
-    touch $WORK_PATH/$1 2> /dev/null
-    rm $WORK_FILE 2>/dev/null
-    ln -s $WORK_PATH/$1 $WORK_FILE 2>/dev/null
-}
-
-########################################################################################################
-# 添加路径
-########################################################################################################
-function op_other_add()
+function common_entry()
 {
     case $1 in
-        [1-9])
-        TARGET=$(sed -n ''$1' p' $2)
-        $TARGET
-        ;;
-
-        [1-9][0-9]*)
-        TARGET=$(sed -n ''$1' p' $2)
-        $TARGET
-        ;;
-
-        *)
-        echo $1 >> $2
-        ;;
+        -d)          file_list_del $WORK_FILE $2 ;;
+        -c)          file_list_clear $WORK_FILE ;;
+        [1-9]*)      run_cmd $1 ;;
+        +)           add_last_cmd $@ ;;
     esac
+}
+
+########################################################################################################
+# 操作默认文件
+########################################################################################################
+function op_default_file()
+{
+    if [[ $# == 1 ]]; then
+        file_show $DEFAULT_FILE
+    else
+        WORK_FILE=$DEFAULT_FILE
+        shift 1
+        common_entry $@
+    fi
+}
+
+########################################################################################################
+# 操作work file
+########################################################################################################
+function op_other_file()
+{
+    WORK_FILE=$(get_dir_file_item $WORK_PATH $2)
+    shift 2
+    common_entry $@
 }
 
 ########################################################################################################
 # 跳转
 ########################################################################################################
-function op_other()
-{
-    local FILE=$WORK_PATH/$2
-
-    case $# in
-        1)
-        ls $WORK_PATH
-        ;;
-
-        2)
-        cat -n $FILE
-        ;;
-
-        3)
-        op_other_add $3 $FILE
-        ;;
-    esac
-}
-
-########################################################################################################
-# 添加路径
-########################################################################################################
-function zwcmd_edit()
+function op_other_work_file()
 {
     case $# in
-        1)
-        vi $WORK_FILE
-        ;;
-        
-
-        2)
-        vi $WORK_PATH/$2
-        ;;
+        1) dir_file_show $WORK_PATH ;;
+        2) file_show $WORK_PATH $2 ;;
+        *) op_other_file $@ ;;
     esac
 }
 
@@ -177,81 +102,24 @@ function zwcmd_edit()
 function zwcmd_entry()
 {
 	# 参数判断
-	if [ $# = 0 ];then
-		list_show $WORK_FILE
-        exit 1
+	if [ $# == 0 ];then
+        file_show $WORK_FILE
+    else
+        case $1 in
+            -h)          print_usage ;;
+            -init)       file_list_init ;;
+            -cd)         cd_path $WORK_PATH ;;
+            -rm)         dir_file_del $WORK_PATH $2 ;;
+            -mv)         file_rename $WORK_PATH/$2 $WORK_PATH/$3 ;;
+            -sw)         work_file_switch $WORK_PATH $2 ;;
+			-e)          edit_work_file $@ ;;
+            -edit)       edit_file $THIS_FILE ;;
+            -this)       who_ln_file $WORK_FILE ;;
+            -x)          op_other_work_file $@ ;;
+            -xx)         op_default_file $@ ;;
+            *)           common_entry $@ ;;
+        esac
     fi
-
-    case $1 in
-        -h)
-        print_usage
-        ;;
-
-        -init)
-        zwcmd_init
-        ;;
-
-        -l)
-        ls $WORK_PATH
-        ;;
-
-        -ls)
-        ls $WORK_PATH
-        ;;
-
-        -x)
-        op_other $@
-        ;;
-
-        -e)
-        zwcmd_edit $@
-        ;;
-
-        -edit)
-        vi $THIS_FILE
-        ;;
-
-        -cd)
-        cd $WORK_PATH
-        ;;
-
-        -d)
-        list_sub $WORK_FILE $2
-        ;;
-
-        -c)
-        list_clr $WORK_FILE
-        ;;
-
-        -rm)
-        rm $WORK_PATH/$2
-        ;;
-
-        -mv)
-        mv $WORK_PATH/$2 $WORK_PATH/$3
-        ;;
-
-        -sw)
-        zwcmd_switch $2
-        ;;
-
-        [1-9])
-        run_cmd $1
-        ;;
-
-        [1-9][0-9]*)
-        run_cmd $1
-        ;;
-
-        +)
-        add_last_cmd
-        ;;
-
-        *)
-        add_cmd $@
-        ;;
-    esac
 }
-
 
 zwcmd_entry $@

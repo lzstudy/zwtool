@@ -70,10 +70,10 @@ function get_dir_file_item()
 function file_show()
 {
     if [[ $# == 1 ]]; then
-        cat $1
+        cat -n $1
     else
         ITEM=$(get_dir_file_item $1 $2)
-        cat $ITEM
+        cat -n $ITEM
     fi
 }
 
