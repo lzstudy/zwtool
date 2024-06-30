@@ -75,34 +75,12 @@ function zwsample_entry()
 
 	# 参数判断
 	case $1 in
-		-h)
-		print_usage $@
-		;;
-
-		-init)
-		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		-grep)
-		cd $CORE_PATH
-		grep --color=auto $2 * -nr
-		;;
-
-		-cd)
-		cd $CORE_PATH
-		;;
-
-		-ls)
-		list_sample $@
-		;;
-
-		*)
-		get_sample $@
-		;;
+		-h)     print_usage $@ ;;
+		-init)  ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
+		-edit)  vi $THIS_FILE ;;
+		-ls)    list_sample $@ ;;
+		-cd)    cd $CORE_PATH ;;
+		*)      get_sample $@ ;;
 	esac
 }
 

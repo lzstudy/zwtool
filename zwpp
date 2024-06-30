@@ -80,13 +80,8 @@ function prompt_file_context()
 function do_prompt()
 {
 	case $# in
-		1)
-		prompt_file $@
-		;;
-
-		*)			
-		prompt_file_context $@
-		;;
+		1) prompt_file $@ ;;
+		*) prompt_file_context $@ ;;
 	esac
 }
 
@@ -101,46 +96,15 @@ function zwpp_entry()
 	fi
 
 	case $1 in
-		-h)
-		print_usage
-		;;
-
-		.)
-        cat $PWD/zw.pp
-		;;
-
-		-init)
-		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
-		;;
-
-		-l)
-		look_file $@
-		;;
-
-		-ls)
-		look_file $@
-		;;
-
-		-cd)
-		cd $CORE_PATH
-		;;
-
-		-e)
-		zwpp_edit $@
-		;;
-
-		-grep)
-		cd $CORE_PATH
-		grep --color=auto $2 * -nr
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		*) 
-		do_prompt $@
-		;;
+		-h)    print_usage ;;
+		.)     cat $PWD/zw.pp ;;
+		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
+		-l)    look_file $@ ;;
+		-ls)   look_file $@ ;;
+		-cd)   cd $CORE_PATH ;;
+		-e)    zwpp_edit $@ ;;
+		-edit) vi $THIS_FILE ;;
+		*)     do_prompt $@ ;;
 	esac
 }
 
