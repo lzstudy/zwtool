@@ -103,25 +103,11 @@ function zwssh_entry()
 	fi
 
 	case $1 in
-		-init)
-		zwssh_init
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		-key)
-		zwssh_gen_key $@
-		;;
-
-		-e)
-		vi $HOST_FILE
-		;;
-
-		*)
-		ssh_work $@
-		;;
+		-init) zwssh_init ;;
+		-edit) vi $THIS_FILE ;;
+		-key)  zwssh_gen_key $@ ;;
+		-e)    vi $HOST_FILE ;;
+		*)     ssh_work $@ ;;
 	esac
 }
 

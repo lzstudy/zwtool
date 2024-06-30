@@ -38,21 +38,10 @@ function get_file()
 	fi
 	
 	case $1 in
-		-a)
-		SCP_FILE=$HOST_ZW/$2
-		;;
-
-		-s)
-		SCP_FILE=$HOST_SERVER/$2
-		;;
-
-		-b)
-		SCP_FILE=$HOST_BOARD/$2
-		;;
-
-		-t)
-		SCP_FILE=$HOST_TMP/$2
-		;;
+		-a) SCP_FILE=$HOST_ZW/$2 ;;
+		-s) SCP_FILE=$HOST_SERVER/$2 ;;
+		-b) SCP_FILE=$HOST_BOARD/$2 ;;
+		-t) SCP_FILE=$HOST_TMP/$2 ;;
 	esac
 
 	echo $SCP_FILE
@@ -72,21 +61,10 @@ function zwget_entry()
 	fi
 
 	case $1 in
-		-init)
-		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		-e)
-		vi $HOST_FILE
-		;;
-
-		*)
-		get_file $@
-		;;
+		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
+		-edit) vi $THIS_FILE ;;
+		-e)    vi $HOST_FILE ;;
+		*)     get_file $@ ;;
 	esac
 }
 zwget_entry $@

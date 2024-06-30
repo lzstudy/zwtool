@@ -38,23 +38,11 @@ function put_file()
 	fi
 	
 	case $1 in
-		-a)
-		SCP_DIR=$HOST_ZW
-		;;
-
-		-s)
-		SCP_DIR=$HOST_SERVER
-		;;
-
-		-b)
-		SCP_DIR=$HOST_BOARD
-		;;
-
-		-t)
-		SCP_DIR=$HOST_TMP
-		;;
+		-a) SCP_DIR=$HOST_ZW ;;
+		-s) SCP_DIR=$HOST_SERVER ;;
+		-b) SCP_DIR=$HOST_BOARD ;;
+		-t) SCP_DIR=$HOST_TMP ;;
 	esac
-
 
 	scp -r $2 $SCP_DIR
 }
@@ -71,21 +59,10 @@ function zwput_entry()
 	fi
 
 	case $1 in
-		-init)
-		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		-e)
-		vi $HOST_FILE
-		;;
-
-		*)
-		put_file $@
-		;;
+		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
+		-edit) vi $THIS_FILE ;;
+		-e)    vi $HOST_FILE ;;
+		*)     put_file $@ ;;
 	esac
 }
 zwput_entry $@

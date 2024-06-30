@@ -30,21 +30,10 @@ function print_usage()
 function put_file()
 {	
 	case $1 in
-		-a)
-		HOST_PATH=$HOST_ZW
-		;;
-
-		-s)
-		HOST_PATH=$HOST_SERVER
-		;;
-
-		-b)
-		HOST_PATH=$HOST_BOARD
-		;;
-
-		-t)
-		HOST_PATH=$HOST_TMP
-		;;
+		-a) HOST_PATH=$HOST_ZW ;;
+		-s) HOST_PATH=$HOST_SERVER ;;
+		-b) HOST_PATH=$HOST_BOARD ;;
+		-t) HOST_PATH=$HOST_TMP ;;
 	esac
 
 	arr=(`echo $HOST_PATH | tr ':' ' '`)
@@ -65,21 +54,10 @@ function zwput_entry()
 	fi
 
 	case $1 in
-		-init)
-		ln -s $THIS_FILE $LINK_FILE 2> /dev/null
-		;;
-
-		-edit)
-		vi $THIS_FILE
-		;;
-
-		-e)
-		vi $HOST_FILE
-		;;
-
-		*)
-		put_file $@
-		;;
+		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
+		-edit) vi $THIS_FILE ;;
+		-e)    vi $HOST_FILE ;;
+		*)     put_file $@ ;;
 	esac
 }
 zwput_entry $@
