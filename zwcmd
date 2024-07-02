@@ -111,7 +111,7 @@ function zwcmd_entry()
             -init)       file_list_init ;;
             -cd)         cd_path $WORK_PATH ;;
             -rm)         dir_file_del $WORK_PATH $2 ;;
-            -mv)         file_rename $WORK_PATH/$2 $WORK_PATH/$3 ;;
+            -mv)         file_rename $WORK_PATH $2 $3 ;;
             -sw)         work_file_switch $WORK_PATH $2 ;;
 			-e)          edit_work_file $@ ;;
             -edit)       edit_file $THIS_FILE ;;
