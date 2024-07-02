@@ -92,8 +92,10 @@ function file_show()
         log_i "[$FILE]"
         cat -n $1
     else
-        ITEM=$(get_dir_file_item $1 $2)
-        cat -n $ITEM
+        FILE=$(get_dir_file_item $1 $2)
+        NAME=${FILE##*/}
+        log_i "[$NAME]"
+        cat -n $FILE
     fi
 }
 
