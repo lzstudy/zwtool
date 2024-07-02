@@ -1,10 +1,18 @@
 ############################################################### 1 日志
 RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+NC='\033[0m'
 
 ### 打印
 function log_e()
 {
-    echo -e "    ${RED}error: $@ ${NC}"
+    echo -e "    ${RED}ERROR: $@ ${NC}"
+}
+
+function log_i()
+{
+    echo -e "${ORANGE}$@ ${NC}"
 }
 
 ### 错误码
@@ -17,10 +25,19 @@ function log_errno()
 
     esac
 
-    echo -e "    ${RED}error: ${err_text} ${NC}"
+    echo -e "    ${RED}ERROR: ${err_text} ${NC}"
 }
 
-############################################################### 2 文件操作
+############################################################### 2 通用操作
+### 查看软连接指向的文件
+function who_ln_file()
+{
+    FILE=$(readlink -f "$1")
+    NAME=${FILE##*/}
+    echo $NAME
+}
+
+############################################################### 3 文件操作
 ### 文件初始化
 function file_list_init()
 {
@@ -71,6 +88,8 @@ function get_dir_file_item()
 function file_show()
 {
     if [[ $# == 1 ]]; then
+        FILE=$(who_ln_file $1)
+        log_i "[$FILE]"
         cat -n $1
     else
         ITEM=$(get_dir_file_item $1 $2)
@@ -87,10 +106,18 @@ function file_rename()
 ### 切换工作路径 
 function work_file_switch()
 {
-    NEW_FILE=$1/$2    
-    touch $NEW_FILE                         # 创建新文件
-    rm $WORK_FILE 2>/dev/null               # 删除之前的软连接
-    ln -s $NEW_FILE $WORK_FILE 2>/dev/null  # 重新创建新的软连接
+    if [[ $# == 1 ]]; then
+        dir_file_show $WORK_PATH
+    else
+        NEW_FILE=$(get_dir_file_item $1 $2)
+        NEW_NAME=${NEW_FILE##*/}
+        OLD_NAME=$(who_ln_file $WORK_FILE)
+        
+        touch $NEW_FILE                         # 创建新文件
+        rm $WORK_FILE 2>/dev/null               # 删除之前的软连接
+        ln -s $NEW_FILE $WORK_FILE 2>/dev/null  # 重新创建新的软连接
+        log_i "[$OLD_NAME] => [$NEW_NAME]"
+    fi
 }
 
 ###  编辑文件
@@ -99,15 +126,7 @@ function edit_file()
     vim $1
 }
 
-### 查看软连接指向的文件
-function who_ln_file()
-{
-    FILE=$(readlink -f "$1")
-    NAME=${FILE##*/}
-    echo $NAME
-}
-
-############################################################### 3 目录内文件操作
+############################################################### 4 目录内文件操作
 # 查看某个目录中所有文件, [$1 - dir_path]
 function dir_file_show()
 {
@@ -121,7 +140,7 @@ function dir_file_del()
     rm $ITEM
 }
 
-############################################################### 4 其他
+############################################################### 5 其他
 ###  进入路径 [$1 - 全路径]
 function cd_path()
 {
