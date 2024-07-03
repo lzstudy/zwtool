@@ -3,23 +3,10 @@
 PS1='\h:\w\$ '                                          # 显示全路径
 
 #################### {cmd}
-# {systemd} {sys} {systemd-analyze} 
-systemd-analyze
-systemd-analyze blame                                   # 优化系统启动时间
-systemd-analyze critical-chain							# 优化具体时间
-systemctl disable NetworkManager-wait-online.service 	# 关闭服务
 
-# {journalctl} 日志管理
-jounrnalctl                                             # 查看所有日志
 
 # {systemctl} {service} {srv} 服务管理
 cp xxx.service /usr/lib/systemd/system/micad.service    # 拷贝服务
-systemctl daemon-reload                                 # 重载服务
-systemctl enable micad                                  # 使能服务
-
-# {rpm}
-rpm -ivh <xxx>                                          # 安装rpm
-rpm -qf <xxx>                                           # 查看rpm
 
 #################### {net} {net_config}
 # {static ip} {静态IP} 修改默认ip配置
@@ -28,24 +15,7 @@ DNS1=192.168.30.100                                     # 默认DNS
 
 vi /etc/network/interfaces                              # 配置固定IP - 嵌入式
 
-# {nmcli} 管理网络连接 - 服务器常用
-nmcli device wifi list                                  # 查看可用wifi
-nmcli device wifi connect <ssid> password <password>    # 设置连接的wifi
-nmcli connection show                                   # 验证wifi连接
-nmcli dev status                                        # 显示连接状态
-nmcli dev disconnect wlan0
-
-# {ip} 网络管理
-ip addr show                                            # 查看网络信息
-ip link set ens33 down/up                               # 启用或禁用网口
-ip addr add 169.254.145.21/255.255.0.0 dev eth0         # 配置IP
-ip addr del 169.254.145.21/16 dev eth0                  # 删除IP
-ip route add 120.0.0.0/8 via 192.168.31.1 dev wlan0     # 配置规则路由
-ip route show                                           # 查看路由
-ip route get 120.48.82.24                               # 查看某个路由
-ip route add default via 192.168.31.1                   # 设置默认路由
-ip rulue                                                # 查看全部路由表(默认main表)
-
+            
 # {passwd} {pwd}
 /etc/passwd                                             # 密码设置文件, 去掉x可以不用密码
 /etc/shadow                                             # 密码密钥文件

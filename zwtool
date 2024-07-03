@@ -38,15 +38,16 @@ function zwtool_module_init()
 	$ROOT_PATH/zwget   -init			# 初始化GET工具
 	$ROOT_PATH/zwput   -init			# 初始化PUT工具
 	$ROOT_PATH/zwping  -init			# 初始化SSH工具
-	$ROOT_PATH/zwpp    -init			# 初始化PP工具
 	$ROOT_PATH/zwcd    -init			# 初始化跳转工具
 
 	# 专用工具
-	$ROOT_PATH/zwsp   -init				# 初始化SP工具
-	$ROOT_PATH/zwcp   -init				# 初始化SP工具
-	$ROOT_PATH/zwtar  -init          	# 初始化tar工具
-	$ROOT_PATH/zwweb  -init          	# 初始化web工具
-	$ROOT_PATH/zwkcmd -init				# 初始化命令工具
+	$ROOT_PATH/zwsp    -init			# 初始化SP工具
+	$ROOT_PATH/zwp     -init			# 初始化P工具
+	$ROOT_PATH/zwpp    -init			# 初始化PP工具
+	$ROOT_PATH/zwcp    -init			# 初始化SP工具
+	$ROOT_PATH/zwtar   -init          	# 初始化tar工具
+	$ROOT_PATH/zwweb   -init          	# 初始化web工具
+	$ROOT_PATH/zwkcmd  -init			# 初始化命令工具
 }
 
 ########################################################################################################

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+CORE_PATH=$ROOT_PATH/core/zwp
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwp
+LINK_FILE=$PATH_ZWTL_INST/p
+
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_p
+
+########################################################################################################
+# 帮助选项
+########################################################################################################
+function print_usage()
+{
+    echo "[Usage]: "
+    printf "%-20s%-50s\n" "	p <key>"           "match key"
+    printf "%-20s%-50s\n" "	p <key> <num>"     "match key whitch context"
+}
+
+############################################################### propt
+# 提示文件
+function do_prompt()
+{
+	cd $CORE_PATH
+
+	if [[ $# == 1 ]]; then	
+		grep --color=auto $1 * -nr -A 5
+	else
+		grep --color=auto $1 * -nr -A $2
+	fi
+}
+
+
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwp_entry()
+{
+	if [ $# = 0 ];then
+		cat $DEFAULT_FILE
+		exit 1
+	fi
+
+	case $1 in
+		-h)    print_usage ;;
+		-init) common_init ;;
+		-x)    do_x $CORE_PATH $@ ;;
+		-e)    p_edit $2 ;;
+		-edit) edit_file $THIS_FILE ;;
+		-cd)   cd_dir $CORE_PATH ;;
+		*)     do_prompt $@ ;;
+	esac
+}
+
+zwp_entry $@

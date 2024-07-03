@@ -1,0 +1,4 @@
+#!/bin/sh
+# {rpm}
+rpm -ivh <xxx>                                          # 安装rpm
+rpm -qf <xxx>                                           # 查看rpm

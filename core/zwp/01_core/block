@@ -1,0 +1,3 @@
+#!/bin/bash
+{fdisk}
+fdisk /dev/mmcblk1                                # 设置分区 n +100M
