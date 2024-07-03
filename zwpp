@@ -8,17 +8,18 @@ CORE_PATH=$ROOT_PATH/core/zwpp
 THIS_FILE=$ROOT_PATH/zwpp
 LINK_FILE=$PATH_ZWTL_INST/pp
 
-# 默认文件
-DEFAULT_FILE=$CORE_PATH/current
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_p
 
 ########################################################################################################
 # 帮助选项
 ########################################################################################################
 function print_usage()
 {
-    echo "cmd           [arg]            [val]     description"
-    echo "----------    -------------    ------    --------------"
-	echo "pp                             file      look file note"
+    echo "[Usage]: "
+    printf "%-20s%-50s\n" "	pp <key>"           "match all file to key"
+    printf "%-20s%-50s\n" "	pp <file> <key>"    "match target file to key"
 }
 
 ########################################################################################################
@@ -101,8 +102,8 @@ function zwpp_entry()
 		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
 		-l)    look_file $@ ;;
 		-ls)   look_file $@ ;;
-		-cd)   cd $CORE_PATH ;;
-		-e)    zwpp_edit $@ ;;
+		-cd)   cd_dir $CORE_PATH ;;
+		-e)    p_edit $2 ;;
 		-edit) vi $THIS_FILE ;;
 		*)     do_prompt $@ ;;
 	esac

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# edit target 
+function p_edit()
+{
+	RES=$(find $CORE_PATH -name $1)
+	vi $RES
+}
