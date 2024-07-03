@@ -86,7 +86,7 @@ function op_other_file()
 function op_other_work_file()
 {
     case $# in
-        1) dir_file_show $WORK_PATH ;;
+        1) dir_show $WORK_PATH ;;
         2) file_show $WORK_PATH $2 ;;
         *) op_other_file $@ ;;
     esac

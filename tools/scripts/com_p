@@ -7,6 +7,12 @@ function p_edit()
 	vi $RES
 }
 
+function file_show()
+{
+    cat $1
+}
+
+
 ############################################################### x 操作
 # 获取名字
 function get_name()
@@ -36,17 +42,6 @@ function num_to_item()
     fi
 
     echo $ITEM
-}
-
-# 查看某个目录中所有文件, [$1 - dir_path]
-function dir_show()
-{
-    ls -F $1 | cat -n
-}
-
-function file_show()
-{
-    cat $1
 }
 
 # $1 - path, $2 - num/str
