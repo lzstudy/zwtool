@@ -32,7 +32,8 @@ function print_usage()
 function run_cmd()
 {
     TARGET=$(sed -n ''$1' p' $WORK_FILE)
-    $TARGET
+    CMD="${TARGET%% #*}"
+    $CMD
 }
 
 #######################################################################################################

@@ -2,3 +2,7 @@
 # {rpm}
 rpm -ivh <xxx>                                          # 安装rpm
 rpm -qf <xxx>                                           # 查看rpm
+
+# {patch}
+git apply xxx.patch                                     # 通过git应用patch
+patch -p0 < xxx.patch                                   # 应用patch

@@ -5,4 +5,35 @@ cortex-A55 * 4, 1.2GHz, 32K I/D cache                    # CPU参数
 4K 60的ISP图像处理, 3F WDR, 多级降噪, 6轴防抖 硬件拼接   # ISP参数
 4Tops INT8的算力                                         # NPU参数
 
-#------------------------------------------------ {boot} {启动}
+#------------------------------------------------ {build} {build-oe}
+
+#------------------------------------------------ {build} {build-ybn}
+make rootfs                    # 编译文件系统 - rootfs.ext4
+make kernel                    # 编译内核     - kernel
+make u-boot                    # 编译uboot    - boot_env_4G.bin 
+make atf                       # 编译atf固件  - bl31.bin
+
+#------------------------------------------------ {boot} {update} {启动}
+1 按住update按键
+2 点按reset按键
+
+#------------------------------------------------ {func}
+1 ./adc                  # 接收ADC引脚功能
+2 audio                  # 音频接口
+3 can
+4 hdmi
+5 摄像头
+6 uvc
+7 mipi屏
+8 i2c
+9 pwm
+10 RS485
+11 RTC
+12 USB
+13 PCIE
+14 TF
+
+
+
+
+

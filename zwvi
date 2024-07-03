@@ -39,7 +39,8 @@ function add_file()
 function edit_file()
 {
     ITEM=$(sed -n ''$1' p' $WORK_FILE)
-    vim $ITEM
+    FILE="${ITEM%% *}"
+    vim $FILE
 }
 
 ########################################################################################################

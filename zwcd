@@ -42,7 +42,8 @@ function zwcd_env()
 function entry_dir()
 {
     TARGET=$(sed -n ''$1' p' $WORK_FILE)
-    cd $TARGET
+    DIR="${TARGET%% *}"
+    cd $DIR
 }
 
 ########################################################################################################
