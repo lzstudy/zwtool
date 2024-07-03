@@ -1,14 +1,17 @@
 #!/bin/bash
 ################################################# {sys}
 {systemctl} {sys} {ctl}
-systemctl daemon-reload                                 # 重载服务
-systemctl enable micad                                  # 使能服务
+systemctl daemon-reload                                    # 重载服务
+systemctl enable micad                                     # 使能服务
 
 # {journalctl} 日志管理
-jounrnalctl                                             # 查看所有日志
+jounrnalctl                                                # 查看所有日志
 
 # {systemd} {systemd-analyze} 
 systemd-analyze
-systemd-analyze blame                                   # 优化系统启动时间
-systemd-analyze critical-chain							# 优化具体时间
-systemctl disable NetworkManager-wait-online.service 	# 关闭服务
+systemd-analyze blame                                      # 优化系统启动时间
+systemd-analyze critical-chain							   # 优化具体时间
+systemctl disable NetworkManager-wait-online.service 	   # 关闭服务
+
+# {usermod}
+usermod -p "" root                                         # 清空密码
