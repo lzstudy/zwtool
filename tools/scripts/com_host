@@ -1,0 +1,12 @@
+TEMP_FILE=$ROOT_PATH/tools/templete/hosts
+
+# 初始化
+function host_init()
+{
+    ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+
+    if [ ! -e $HOST_FILE ]; then
+        mkdir -p $WORK_PATH
+        cp $TEMP_FILE $HOST_FILE
+    fi
+}

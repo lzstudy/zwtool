@@ -10,7 +10,9 @@ WORK_FILE=$WORK_PATH/.current
 THIS_FILE=$ROOT_PATH/zwcmd
 LINK_FILE=$PATH_ZWTL_INST/cmd
 
-source $ROOT_PATH/utuils
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_wf
 
 
 ########################################################################################################

@@ -1,0 +1,52 @@
+############################################################### 1 日志
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+NC='\033[0m'
+
+### 打印
+function log_e()
+{
+    echo -e "    ${RED}ERROR: $@ ${NC}"
+}
+
+function log_i()
+{
+    echo -e "${ORANGE}$@ ${NC}"
+}
+
+### 错误码
+function log_errno()
+{
+    err_text=
+
+    case $1 in
+        1)  err_text="[$2] not exist" ;;
+
+    esac
+
+    echo -e "    ${RED}ERROR: ${err_text} ${NC}"
+}
+
+############################################################### 2 通用操作
+### 查看软连接指向的文件
+function who_ln_file()
+{
+    FILE=$(readlink -f "$1")
+    NAME=${FILE##*/}
+    echo $NAME
+}
+
+# 编辑文件
+function edit_file()
+{
+    vi $1
+} 
+
+############################################################### 3 简易操作
+# 模块初始化
+function common_init()
+{
+    ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+}
+

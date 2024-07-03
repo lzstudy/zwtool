@@ -12,16 +12,19 @@ LINK_FILE=$PATH_ZWTL_INST/pt
 HOST_FILE=$WORK_PATH/hosts
 source $HOST_FILE 2> /dev/null
 
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_host
+
 
 ########################################################################################################
 # 打印用法
 ########################################################################################################
 function print_usage()
 {
-    echo "cmd           [arg]            [val]     description"
-    echo "----------    -------------    ------    --------------"
-	echo "pt            -a/-s/-b/-t      file      put file to host"
-	echo "pt            -e                         edit host"
+    echo "[Usage]: "
+    printf "%-30s%-50s\n" "	pt <-a/-s/-b/-t> <file>"  		"put file to target host"
+	printf "%-30s%-50s\n" "	pt -e"  		                "edit host file"
 }
 
 ########################################################################################################
@@ -59,9 +62,9 @@ function zwput_entry()
 	fi
 
 	case $1 in
-		-init) ln -s $THIS_FILE $LINK_FILE 2> /dev/null ;;
-		-edit) vi $THIS_FILE ;;
-		-e)    vi $HOST_FILE ;;
+		-init) host_init ;;
+		-edit) edit_file $THIS_FILE ;;
+		-e)    edit_file $HOST_FILE ;;
 		*)     put_file $@ ;;
 	esac
 }

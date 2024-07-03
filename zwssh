@@ -7,23 +7,25 @@ WORK_PATH=$PATH_ZWTL_HOST/zwscp
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwssh
 LINK_FILE=$PATH_ZWTL_INST/ksh
-TEMP_FILE=$ROOT_PATH/scripts/templete/hosts
 
 # COOKIES文件
 HOST_FILE=$WORK_PATH/hosts
 source $HOST_FILE 2> /dev/null
+
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_host
 
 ########################################################################################################
 # 打印用法
 ########################################################################################################
 function print_usage()
 {
-    echo "cmd           [arg]            [val]     description"
-    echo "----------    -------------    ------    --------------"
-	echo "ksh           -init                      init ksh"
-    echo "ksh           -a/-e/-t/-s                ssh server"
-	echo "ksh           -key             'email'   gen key"
-	echo "ksh           -a/-e/-t/-s       key      cp ssh id to server"
+    echo "[Usage]: "
+    printf "%-30s%-50s\n" "	ksh -init"  		     "init ksh"
+	printf "%-30s%-50s\n" "	ksh -a/-e/-t/-s"     	 "ssh server"
+	printf "%-30s%-50s\n" "	ksh -key <mail>"  		 "gen key"
+	printf "%-30s%-50s\n" "	ksh -a/-e/-t/-s <key>"   "cp ssh id to server"
 }
 
 ########################################################################################################
@@ -52,21 +54,10 @@ function ssh_work()
 	HOST=
 
 	case $1 in
-		-a)
-		HOST=$HOST_ZW
-		;;
-
-		-s)
-		HOST=$HOST_SERVER
-		;;
-
-		-b)
-		HOST=$HOST_BOARD
-		;;
-
-		-t)
-		HOST=$HOST_TMP
-		;;
+		-a) HOST=$HOST_ZW ;;
+		-s) HOST=$HOST_SERVER ;;
+		-b) HOST=$HOST_BOARD ;;
+		-t) HOST=$HOST_TMP ;;
 	esac
 	
 	arr=(`echo $HOST | tr ':' ' '`)
@@ -75,20 +66,9 @@ function ssh_work()
 	if [ $# = 1 ];then
 		ssh ${arr[0]}
 		exit
-	fi
-
-	# 2个参数
-	case $2 in
-		key)
+	else
 		ssh-copy-id ${arr[0]}
-		;;
-
-		ping)
-		HOST=${arr[0]}
-		IP=${HOST#*@}
-		ping $IP 
-		;;
-	esac
+	fi
 }
 
 ########################################################################################################
@@ -103,10 +83,10 @@ function zwssh_entry()
 	fi
 
 	case $1 in
-		-init) zwssh_init ;;
-		-edit) vi $THIS_FILE ;;
+		-init) host_init ;;
+		-edit) edit $THIS_FILE ;;
+		-e)    edit $HOST_FILE ;;
 		-key)  zwssh_gen_key $@ ;;
-		-e)    vi $HOST_FILE ;;
 		*)     ssh_work $@ ;;
 	esac
 }
