@@ -45,7 +45,7 @@ function prompt_file_context()
 	RES=$(find -name $1)
 
 	if [[ $# == 2 ]]; then
-		grep --color=auto $2 $RES 5
+		grep --color=auto $2 $RES -A 5
 	else
 		grep --color=auto $2 $RES -A $3
 	fi
