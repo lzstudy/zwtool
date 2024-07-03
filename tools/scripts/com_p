@@ -6,3 +6,107 @@ function p_edit()
 	RES=$(find $CORE_PATH -name $1)
 	vi $RES
 }
+
+############################################################### x 操作
+# 获取名字
+function get_name()
+{
+    local name=${1##*/}
+    echo $name
+}
+
+# 获取文件元素, [$1 - dir] [$2 - num]
+function num_to_item()
+{
+    name=$2
+    local ITEM                          # 本地ITEM变量
+    declare -a files                    # 声明数组
+
+    ITEM=$2                             # 默认文件
+
+    # 如果名字是数字, 则进行转换
+    if [[ $2 =~ ^[0-9]+$ ]]; then
+        name=$((name - 1))              # 编号 - 1(数组从0开始)
+        files=($(ls -F $1))             # 查看目录储到files数组
+        ITEM=${files[$name]}            # 拼接ITEM
+    else
+        if [ ! -e $1/$2 ]; then
+            ITEM=                       # ITEM不存在赋值为空
+        fi
+    fi
+
+    echo $ITEM
+}
+
+# 查看某个目录中所有文件, [$1 - dir_path]
+function dir_show()
+{
+    ls -F $1 | cat -n
+}
+
+function file_show()
+{
+    cat $1
+}
+
+# $1 - path, $2 - num/str
+function do_df_show()
+{
+    if [[ -d $1 ]]; then
+        dir_show $1
+    else
+        file_show $1
+    fi
+}
+
+
+# $1 - PATH, $2 - l1
+function do_x()
+{
+    local DF=$1
+
+    for (( i = 3; i <= $#; i++ )); do
+        ITEM=$(num_to_item $DF ${!i})
+        DF=$DF/$ITEM
+    done
+
+    do_df_show $DF
+}
+
+############################################################### propt
+# 提示文件
+function prompt_file()
+{
+	cd ${CORE_PATH}
+	RES=$(find -name $1)
+	FILE=$CORE_PATH/$RES
+
+	if [ -f $FILE ]; then
+		cat $FILE						
+	else
+		cd $CORE_PATH
+		grep --color=auto $1 * -nr
+	fi
+}
+
+# 提示上下文
+function prompt_file_context()
+{
+	cd ${CORE_PATH}
+	RES=$(find -name $1)
+
+	if [[ $# == 2 ]]; then
+		grep --color=auto $2 $RES 5
+	else
+		grep --color=auto $2 $RES -A $3
+	fi
+}
+
+# 提示
+function do_prompt()
+{
+	case $# in
+		1) prompt_file $@ ;;
+		*) prompt_file_context $@ ;;
+	esac
+}

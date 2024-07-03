@@ -98,11 +98,7 @@ function edit_file()
 }
 
 ############################################################### 2 目录内文件操作
-# 查看某个目录中所有文件, [$1 - dir_path]
-function dir_file_show()
-{
-    ls $1 | cat -n
-}
+
 
 ### 文件删除 [$1 - dir_path] [$2 - num/name]
 function dir_file_del()
