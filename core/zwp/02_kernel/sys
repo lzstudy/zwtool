@@ -3,6 +3,9 @@
 {systemctl} {sys} {ctl}
 systemctl daemon-reload                                    # 重载服务
 systemctl enable micad                                     # 使能服务
+systemctl is-enabled micad                                 # 服务是否启动
+systemctl list-dependencies multi-user.target              # 列出所有的服务
+
 
 # {journalctl} 日志管理
 jounrnalctl                                                # 查看所有日志

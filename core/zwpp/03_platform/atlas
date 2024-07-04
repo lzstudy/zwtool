@@ -34,3 +34,6 @@ npu-smi info
 /var/davinci/driver/upgrade-tool --device_index -1 --component -1 --all --version
 cat /etc/sys_version.conf
 
+#================================================ {project} {mica}
+src/mica_linux/library/remoteproc/remoteproc_core.c                        # 修改超时后异常处理
+src/mica_linux/library/include/remoteproc/mica_rsc.h                       # 修改超时时间

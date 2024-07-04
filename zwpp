@@ -42,6 +42,15 @@ function prompt_file()
 function prompt_file_context()
 {
 	cd ${CORE_PATH}
+
+	if [[ $# == 2 ]]; then
+		if [[ $2 =~ ^[0-9]+$ ]]; then
+			grep --color=auto $1 * -nr -A $2
+			exit
+		fi
+	fi
+
+	
 	RES=$(find -name $1)
 
 	if [[ $# == 2 ]]; then

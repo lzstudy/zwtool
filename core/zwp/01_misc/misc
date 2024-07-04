@@ -2,6 +2,7 @@
 # {rpm}
 rpm -ivh <xxx>                                          # 安装rpm
 rpm -qf <xxx>                                           # 查看rpm
+rpm -qa                                                 # 查看所有安装的rpm包
 
 # {patch}
 git apply xxx.patch                                     # 通过git应用patch

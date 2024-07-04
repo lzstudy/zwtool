@@ -24,24 +24,5 @@ oebuild update                            # 设置容器，拉取基础层
 oebuild generate -p ok3588 -d ok3588      # 生成比那一配置文件
 oebuild bitbake openeuler-image           # 编译镜像
 
-#====================================== {dbg}
-bitbake <target> -c cleansstate           # 重新构建target之前
-bitbake <target> -e > env.log             # 所有的bb文件
-bitbake <target> -g
 
-#====================================== {cmd}
-# {oebuild}
-oebuild update yocto                      # 更新系统仓库(openeuler、poky、openembeded三个目录)
-oebulid init -b openEuler-23.09           # 选择q初始化分支
-oebuild generate -l                       # 列出支持的单板
-oebuild generate -p <platform> -d <dir>   # 设置要构建的单板
-
-# {bitbake} {bb}
-bitbake -s                                # 查看所有的配方(target/recipe)
-bitbake <recipe>                          # 构建配方(所有的任务)
-bitbake <recipe> -c listtask              # 查看某个配方所有的任务
-bitbake -f <recipe>                       # 强制编译某个配方(会走全部任务)
-bitbake <recipe> -C do_compile            # 强制编译某个配方(只编译), -C 会让时间戳失效, -v会打印详细信息
-bitbake <recipe> -C do_compile -v -DDD    # -v会打印详细信息, -DDD 打印log.do_compile
-bitbake -e zlib > mybb.log     	          # 查看执行环境中使用的配置文件和类文件
 

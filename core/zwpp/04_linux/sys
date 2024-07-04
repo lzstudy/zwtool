@@ -1,39 +1,24 @@
 ################################################# {sys} {system} 系统
 #################### {base}
-PS1='\h:\w\$ '                                          # 显示全路径
-
-#################### {cmd}
+PS1='\h:\w\$ '                                             # 显示全路径
 
 
-# {systemctl} {service} {srv} 服务管理
-cp xxx.service /usr/lib/systemd/system/micad.service    # 拷贝服务
+#================================================  {systemctl} {service} {srv} {服务管理} {服务流程}
+# {flow - 服务使能流程}
+cp xxx.service /usr/lib/systemd/system/micad.service       # 拷贝服务到规则目录下
+systemctl enable xxx.serivce                               # 使能服务
 
-#################### {net} {net_config}
-# {static ip} {静态IP} 修改默认ip配置
-DNS1=192.168.30.100                                     # 默认DNS
-
-
-
-############################################################################### {net} {网络}
-#------------------------------------------------ {file}
+#================================================ {net} {网络}
+# {file - 配置IP文件}
 /etc/sysconfig/network-scripts/ifcfg-eth0                  # 配置固定IP
 /etc/network/interfaces                                    # 配置固定IP - 嵌入式
 
-############################################################################### {passwd} {pass} {pwd} {密码}          
-#------------------------------------------------ {file}
+#================================================ {passwd} {pass} {pwd} {密码}          
+# {file - 密码相关配置}
 /etc/passwd                                                # 密码设置文件, 去掉x可以不用密码
+/etc/passwd                                                # 登录时不显示括号, 把root->sh改为bash
 /etc/shadow                                                # 密码密钥文件
-
-
-
-
-
-################################################# 系统问题
-# {开机不打印时间戳}
-
-# {用户密码修改}
-vi /etc/pam.d/common-password
-vi /etc/passwd                                          # 登录时不显示括号, 把root->sh改为bash
+/etc/pam.d/common-password                                 # 修改密码规则
 
 
 
