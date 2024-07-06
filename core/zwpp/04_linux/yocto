@@ -1,28 +1,42 @@
 ############################################################################### {yocto}
-# {base}
-PV                                        # 软件包版本号
-config/bitbake.conf  		              # yocto底层配置文件, 配置主要变量(公共变量)
-class/base.bbclass   		              # 通用任务配置文件
-meta-xxx-layer       		              # 元数据的集合
-conf/bblayers.conf   		              # 定位工程所用到的层
-bblayer.conf/local.conf                   # 用户配置文件
-recipe                                    # 元数据的最常见形式, bb  .bbappend  inc   .bbclass
+PN                                        # 配方名字, hello
+PV                                        # 配方版本号, 1.1
+BP                                        # PN_PV, hello_1.1.bb
+B                                         # 编译路径一般指tmp/work/aarch64-openeuler-linux/xxx
+D                                         # 安装路径, 一般指
+S = "${WORKDIR}/hello"                    # 解压后的目录 build/tmp/workdir/hello
+LAYERDIR                                  # 当前layer所在路径(config文件上一层目录)
+BBPATH                                    # 定义bitbake.conf文件, 搜索配置文件
+BBFILES                                   # 定位配方文件和追加文件(.bb和.bbappend)
+SRC_URI = "file://hello"                  # 指定源码路径
 
-############################################################################### {openeuler} {oe}
-#====================================== {file}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ { 文件相关 } @@@@@@@@@@@@@@@@
 # {base} {基础文件}
 ${oe}/src/yocto-meta-openeuler/.oebuild/manifest.yaml                                            # 所有的软件源
 ${oe}/src/yocto-meta-openeuler/meta-openeuler/recipes-core/packagegroups/packagegroup-base.bb    # 所有的基础软件
+
 # {config} {配置文件}
 ${oe}/src/yocto-poky/meta/recipes-core/base-files                                                # 换标文件
 ${oe}/src/yocto-meta-openeuler/meta-openeuler/conf/distro/openeuler.conf                         # openeuler配置文件
 ${oe}src/yocto-meta-openeuler/meta-openeuler/recipes-core/packagegroups/base.bb                  # 所有要编译下载的包在这里
 
-#====================================== {flow}
+#================================================ { 添加软件包 } ==============
+1 在src/yaml中添加源码                                                                           # 添加源码
+2 在yocto-meta-openeuler/meta-openeuler/recipes-examples/hello/添加hello_10.bb                   # 添加构建方法
+3 在yocto-meta-openeuler/meta-openeuler/recipes-core/images/openeuler-image-common.inc 添加安装  # 系统会自动安装
+4 bitbake hello                                                                                  # 编译
+
+#================================================ { 编译镜像 } ================
 oebuild init <work_dir>                   # 初始化工作环境
 oebuild update                            # 设置容器，拉取基础层
 oebuild generate -p ok3588 -d ok3588      # 生成比那一配置文件
 oebuild bitbake openeuler-image           # 编译镜像
 
+bitbake linux-openeuler                   # 内核任务
+bitbake linux-openeuler -c do_compile     # 编译内核
 
 
+#================================================ { 调试 } ================
+${WORKDIR}/temp/log.do_taskname           # 1 查看日志
+bitbake -e <hello>                        # 2 查看该配方使用的local.conf, bblayer.conf, bitbake.conf
+bitbake <hello> -vDDD                     # 3 详细的调试信息

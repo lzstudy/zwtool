@@ -7,14 +7,15 @@ oebuild generate -p <platform> -d <dir>   # 设置要构建的单板
 
 # {bitbake} {bb}
 bitbake -s                                # 查看所有的配方(target/recipe)
-bitbake <recipe>                          # 构建配方(所有的任务)
-bitbake <recipe> -c listtask              # 查看某个配方所有的任务
-bitbake -f <recipe>                       # 强制编译某个配方(会走全部任务)
+bitbake <foo>                             # 构建配方(该所有的任务)
+bitbake <foo> -c listtask                 # 查看某个配方所有的任务
 bitbake <recipe> -C do_compile            # 强制编译某个配方(只编译), -C 会让时间戳失效, -v会打印详细信息
 bitbake <recipe> -C do_compile -v -DDD    # -v会打印详细信息, -DDD 打印log.do_compile
 bitbake -e zlib > mybb.log     	          # 查看执行环境中使用的配置文件和类文件
 
-# {dbg}
+bitbake -b <foo_1.0.bb>                   # 构建配方, 功能同上, 但是不处理依赖性, 一般用于调试
+bitbake -f <recipe>                       # 强制编译某个配方(会走全部任务)
+bitbake -g foo                            # 生成依赖图
+bitbake -g -I vitu/kernel -I eglibc foo   # 生成依赖图，更直观
 bitbake <target> -c cleansstate           # 重新构建target之前
 bitbake <target> -e > env.log             # 所有的bb文件
-bitbake <target> -g
