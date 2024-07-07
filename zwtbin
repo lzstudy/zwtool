@@ -2,7 +2,7 @@
 
 # 通用路径
 ROOT_PATH=$PATH_ZWTL_ROOT
-WORK_PATH=$PATH_ZWTL_HOST/zwtbin
+WORK_PATH=$PATH_ZWTL_TBIN
 
 # 专用文件
 THIS_FILE=$ROOT_PATH/zwtbin
@@ -28,7 +28,6 @@ function print_usage()
 ########################################################################################################
 function tbin_init()
 {
-	mkdir -p $WORK_PATH
 	ln -s $THIS_FILE $LINK_FILE 2> /dev/null
 }
 

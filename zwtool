@@ -48,6 +48,7 @@ function zwtool_module_init()
 	$ROOT_PATH/zwtar   -init          	# 初始化tar工具
 	$ROOT_PATH/zwweb   -init          	# 初始化web工具
 	$ROOT_PATH/zwkcmd  -init			# 初始化命令工具
+	$ROOT_PATH/zwtbin  -init			# 初始化临时二进制工具
 }
 
 ########################################################################################################
@@ -87,16 +88,22 @@ function zwtool_create_env()
 	fi	
 
 	# 创建环境文件
-	mkdir -p $HOST_PATH/bin
+	mkdir -p $HOST_PATH/bin/zbin
+	mkdir -p $HOST_PATH/bin/tbin
+
 	touch $ENV_FILE
 
 	# 添加HOST路径
-	echo "export PATH_ZWTL_ROOT=$PWD" >> $ENV_FILE
-	echo "export PATH_ZWTL_HOST="$HOST_PATH >> $ENV_FILE
-	echo 'export PATH_ZWTL_INST=$PATH_ZWTL_HOST/bin' >> $ENV_FILE
-	echo 'export PATH=$PATH:$PATH_ZWTL_ROOT' >> $ENV_FILE
-	echo 'export PATH=$PATH:$PATH_ZWTL_INST' >> $ENV_FILE
-	echo "alias kd='source zwcd'" >> $ENV_FILE
+	echo "export PATH_ZWTL_ROOT=$PWD" >> $ENV_FILE							# 路径 - zwtool root
+	echo "export PATH_ZWTL_HOST="$HOST_PATH >> $ENV_FILE					# 路径 - host
+	echo 'export PATH_ZWTL_BIN=$PATH_ZWTL_HOST/bin' >> $ENV_FILE			# 路径 - bin
+	echo 'export PATH_ZWTL_ZBIN=$PATH_ZWTL_BIN/zbin' >> $ENV_FILE			# 路径 - zbin, 默认程序安装到此处
+	echo 'export PATH_ZWTL_TBIN=$PATH_ZWTL_BIN/tbin' >> $ENV_FILE			# 路径 - tbin, 临时程序安装到此处
+	echo 'export PATH_ZWTL_INST=$PATH_ZWTL_BIN/zbin' >> $ENV_FILE			# 路径 - inst, 默认程序安装到此处, 目前与zbin同路径
+	echo 'export PATH=$PATH:$PATH_ZWTL_ROOT' >> $ENV_FILE					# 导出路径 - 基础环境
+	echo 'export PATH=$PATH:$PATH_ZWTL_ZBIN' >> $ENV_FILE					# 导出路径 - zbin
+	echo 'export PATH=$PATH:$PATH_ZWTL_TBIN' >> $ENV_FILE                   # 导出路径 - tbin
+	echo "alias kd='source zwcd'" >> $ENV_FILE                              # 支持kd
 }
 
 ########################################################################################################
