@@ -5,6 +5,9 @@ WORK_PATH=$PATH_ZWTL_HOST/zwprj
 THIS_FILE=$ROOT_PATH/zwprj
 LINK_FILE=$PATH_ZWTL_INST/prj
 
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+
 ########################################################################################################
 # 打印使用方法
 ########################################################################################################
@@ -51,7 +54,7 @@ function zwprj_entry()
 	fi
 
 	case $1 in
-		-init) tbin_init ;;
+		-init) common_init ;;
 		-edit) edit_file $THIS_FILE ;;
         -sw)   prj_switch $2 ;;
         -rm)   prj_rm $2 ;;
