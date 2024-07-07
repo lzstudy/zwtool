@@ -49,6 +49,7 @@ function zwtool_module_init()
 	$ROOT_PATH/zwweb   -init          	# 初始化web工具
 	$ROOT_PATH/zwkcmd  -init			# 初始化命令工具
 	$ROOT_PATH/zwtbin  -init			# 初始化临时二进制工具
+	$ROOT_PATH/zwprj   -init			# 初始化项目工具
 }
 
 ########################################################################################################

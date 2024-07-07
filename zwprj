@@ -1,0 +1,61 @@
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwprj
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwprj
+LINK_FILE=$PATH_ZWTL_INST/prj
+
+########################################################################################################
+# 打印使用方法
+########################################################################################################
+function print_usage()
+{
+    echo "[Usage]: "
+    printf "%-20s%-50s\n" "	prj -sw"       "run num cmd"
+}
+
+function module_switch()
+{
+    printf "%-5s: " $1
+    $1 -sw $2
+}
+
+function prj_switch()
+{
+    module_switch zwcd $1
+    module_switch cmd  $1
+    module_switch et   $1
+}
+
+function module_rm()
+{
+    $1 -rm $2
+}
+
+function prj_rm()
+{
+    module_rm zwcd $1
+    module_rm cmd  $1
+    module_rm et   $1
+}
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwprj_entry()
+{
+	# 如果没写参数, 或帮助命令, 则打印帮助信息
+	if [ $# = 0 ] || [ $1 = '-h' ] || [ $1 = '--help' ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+		-init) tbin_init ;;
+		-edit) edit_file $THIS_FILE ;;
+        -sw)   prj_switch $2 ;;
+        -rm)   prj_rm $2 ;;
+	esac
+}
+
+zwprj_entry $@
