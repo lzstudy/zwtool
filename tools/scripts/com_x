@@ -54,7 +54,6 @@ function do_x()
 # 处理文件或目录
 function do_x_df()
 {
-#    do_x $@
     X_DF=$(do_x $@)
 
     if [[ -d $X_DF ]]; then

@@ -7,6 +7,11 @@ CORE_PATH=$ROOT_PATH/core/zwsp
 THIS_FILE=$ROOT_PATH/zwsp
 LINK_FILE=$PATH_ZWTL_INST/sp
 
+# 导入文件
+source $ROOT_PATH/tools/scripts/com_x
+source $ROOT_PATH/tools/scripts/utils
+X_BP=$CORE_PATH                                         # 设置基础路径
+
 
 # 获取模板CLASS
 SAMPLE_CLASS=$(ls -l ${CORE_PATH} |awk '/^d/ {print $NF}')
@@ -80,6 +85,7 @@ function zwsample_entry()
 		-edit)  vi $THIS_FILE ;;
 		-ls)    list_sample $@ ;;
 		-cd)    cd $CORE_PATH ;;
+		-x)      do_x_cat $@ ;;
 		*)      get_sample $@ ;;
 	esac
 }
