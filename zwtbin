@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# 通用路径
+ROOT_PATH=$PATH_ZWTL_ROOT
+WORK_PATH=$PATH_ZWTL_HOST/zwtbin
+
+# 专用文件
+THIS_FILE=$ROOT_PATH/zwtbin
+LINK_FILE=$PATH_ZWTL_INST/tb
+
+# 导入文件
+source $ROOT_PATH/tools/scripts/utils
+source $ROOT_PATH/tools/scripts/com_x
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function print_usage()
+{
+    echo "[Usage]: "
+    printf "%-30s%-50s\n" "	tb -init"  		         "init tmp bin"
+	printf "%-30s%-50s\n" "	tb + <bin/elf>"     	 "add bin"
+	printf "%-30s%-50s\n" "	tb -x <>"  		         "tb -x"
+}
+
+########################################################################################################
+# 打印用法
+########################################################################################################
+function tbin_init()
+{
+	mkdir -p $WORK_PATH
+	ln -s $THIS_FILE $LINK_FILE 2> /dev/null
+}
+
+
+########################################################################################################
+# 程序入口
+########################################################################################################
+function zwtbin_entry()
+{
+	# 如果没写参数, 或帮助命令, 则打印帮助信息
+	if [ $# = 0 ] || [ $1 = '-h' ] || [ $1 = '--help' ];then
+		print_usage
+		exit 1
+	fi
+
+	case $1 in
+		-init) tbin_init ;;
+        -cd)   cd_dir $WORK_PATH ;;
+		-edit) edit_file $THIS_FILE ;;
+		-mv)   do_x_rename $@ ;;
+		-rm)   do_x_remove $@ ;;
+		-x)    do_x_cat    $@ ;;
+        -e)    do_x_edit $WORK_PATH $@ ;;
+		*)     ssh_work $@ ;;
+	esac
+}
+
+zwtbin_entry $@
+

@@ -1,0 +1,96 @@
+#!/bin/sh
+
+X_DF=
+TD=TD_1
+X_BP=$WORK_PATH                  # 固定规则, 使用WORK_PATH
+
+############################################################### x 操作
+# $1 - path, $2 - num/str
+function do_x_dir()
+{
+    case $TD in
+        "TD_1")
+            ls -F $1 | cat -n ;;
+    esac
+    
+}
+
+# 获取名字
+function get_name()
+{
+    local name=${1##*/}
+    echo $name
+}
+
+# 获取文件元素, [$1 - dir] [$2 - num]
+function num_to_name()
+{
+    local name=$2
+    declare -a files                    # 声明数组
+
+    # 如果名字是数字, 则进行转换
+    if [[ $name =~ ^[0-9]+$ ]]; then
+        name=$((name - 1))              # 编号 - 1(数组从0开始)
+        files=($(ls -F $1))             # 查看目录储到files数组
+        name=${files[$name]}            # 拼接ITEM
+    fi
+
+    echo $name
+}
+
+# 循环处理
+function do_x()
+{
+    local DF=$X_BP
+
+    for (( i = 2; i <= $#; i++ )); do
+        NAME=$(num_to_name $DF ${!i})
+        DF=$DF/$NAME
+    done
+
+   echo $DF
+}
+
+# 处理文件或目录
+function do_x_df()
+{
+#    do_x $@
+    X_DF=$(do_x $@)
+
+    if [[ -d $X_DF ]]; then
+        do_x_dir $X_DF
+        exit 
+    fi
+}
+
+# 编辑文件
+function do_x_edit()
+{
+    do_x_df $@
+    vi $X_DF
+}
+
+# 重命名
+function do_x_rename()
+{
+    if [[ $# == 1 ]]; then
+        do_x_df $@
+    else
+        NAME=$(num_to_name $X_BP $2)
+        mv $X_BP/$NAME $X_BP/$3
+    fi
+}
+
+# 删除
+function do_x_remove()
+{
+    do_x_df $@
+    rm $X_DF
+}
+
+# 查看
+function do_x_cat()
+{
+    do_x_df $@
+    cat $X_DF
+}
